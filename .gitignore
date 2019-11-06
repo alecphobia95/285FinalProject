@@ -57,7 +57,6 @@ ExportedObj/
 
 # Crashlytics generated file
 crashlytics-build.properties
-/285FinalProject/
 #Mac Ignores
 # General
 /285FinalProject/.DS_Store
@@ -96,7 +95,6 @@ Icon
 
 # Dump file
 *.stackdump
-/285FinalProject/
 # Folder config file
 /285FinalProject/[Dd]esktop.ini
 
