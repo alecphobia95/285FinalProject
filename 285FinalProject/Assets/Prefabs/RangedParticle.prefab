@@ -142,6 +142,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rb: {fileID: 5762923834188154173}
-  velocity: 5
+  velocity: 8
   vertVel: 0
   horiVel: 0

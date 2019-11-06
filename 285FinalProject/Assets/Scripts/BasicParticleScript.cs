@@ -10,7 +10,6 @@ public class BasicParticleScript : MonoBehaviour
     [HideInInspector]
     public float vertVel, horiVel;
 
-    // Update is called once per frame
     void Update()
     {
         rb.velocity = new Vector2(horiVel, vertVel);

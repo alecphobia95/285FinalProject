@@ -5,7 +5,7 @@ using UnityEngine;
 public class PlayerScript : MonoBehaviour
 {
     public float moveSpeed;
-    public float jumpheight;
+    public float jumpStrength;
     public int maxJumps;
     public Rigidbody2D rb;
     public Transform groundCheck;
@@ -275,12 +275,12 @@ public class PlayerScript : MonoBehaviour
 
     private void Jump()
     {
-        rb.velocity = new Vector2(0, jumpheight);
+        rb.velocity = new Vector2(0, jumpStrength);
     }
 
     private void WallJump(int direction)
     {
-        rb.velocity = new Vector2((moveSpeed * direction), jumpheight);
+        rb.velocity = new Vector2((moveSpeed * direction), jumpStrength);
         control = false;
         Invoke("ReturnControl", 0.3f);
     }
