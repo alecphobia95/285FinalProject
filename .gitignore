@@ -2,7 +2,7 @@
 #
 # Get latest from https://github.com/github/gitignore/blob/master/Unity.gitignore
 #
-/285FinalProject/[Ll]ibrary/
+285FinalProject/[Ll]ibrary/
 /285FinalProject/[Tt]emp/
 /285FinalProject/[Oo]bj/
 /285FinalProject/[Bb]uild/
