@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class PlayerScript : MonoBehaviour
 {
@@ -13,6 +12,12 @@ public class PlayerScript : MonoBehaviour
     public Transform rightCheck;
     public Transform leftCheck;
     public Transform enemyCheck;
+
+    public Transform[] attackSpawns;
+
+    private int currentWep;
+    public GameObject[] attackPrefabs;
+
     public float checkRadius;
     public float checkMookRadius;
     public LayerMask whatIsGround;
@@ -21,8 +26,9 @@ public class PlayerScript : MonoBehaviour
     private bool control;
     private bool onGround, onMook;
     private bool rightWallPress, leftWallPress;
-    private bool leftInput, rightInput, upInput, downInput, jumpInput, jumpHold;
+    private bool leftInput, rightInput, upInput, downInput, jumpInput, jumpHold, shootInput;
     private int airJumps;
+    private string horiAim, vertAim, aim;
     
     private float gravity, halfGravity;
 
@@ -33,6 +39,9 @@ public class PlayerScript : MonoBehaviour
         control = true;
         gravity = rb.gravityScale;
         halfGravity = rb.gravityScale * .5f;
+        horiAim = "right";
+        vertAim = "";
+        currentWep = 0;
     }
 
     private void FixedUpdate()
@@ -51,6 +60,8 @@ public class PlayerScript : MonoBehaviour
         {
             airJumps = maxJumps;
         }
+        SetPlayerAim();
+        HandleShooting();
         RegularMovment();
         ClearInputs();
     }
@@ -87,6 +98,40 @@ public class PlayerScript : MonoBehaviour
             jumpInput = true;
         }
 
+        if (Input.GetKeyDown(KeyCode.Return))
+        {
+            shootInput = true;
+            //Debug.Log("Enter has been pressed");
+        }
+
+    }
+
+    //This is just to be used for aiming ranged weapons for use in a future switch statement
+    void SetPlayerAim()
+    {
+        aim = "left";
+        if (upInput)
+        {
+            vertAim = "Up";
+        }
+        else if (downInput)
+        {
+            vertAim = "Down";
+        }
+        else
+        {
+            vertAim = "";
+        }
+
+        if(vertAim != "" && (!leftInput && !rightInput))
+        {
+            aim = vertAim;
+        }
+        else
+        {
+            aim = horiAim + vertAim;
+        }
+        //Debug.Log(aim);
     }
 
     void ClearInputs()
@@ -97,6 +142,74 @@ public class PlayerScript : MonoBehaviour
         downInput = false;
         jumpInput = false;
         jumpHold = false;
+        shootInput = false;
+    }
+
+    void HandleShooting()
+    {
+        if (shootInput)
+        {
+            GameObject bullet;
+            BasicParticleScript script;
+            Debug.Log(aim);
+            switch (aim)
+            {
+                case "right":
+                    bullet = Instantiate(attackPrefabs[currentWep], attackSpawns[0]);
+                    script = bullet.GetComponent<BasicParticleScript>();
+                    script.horiVel = script.velocity;
+                    script.vertVel = 0;
+                    break;
+                case "rightDown":
+                    bullet = Instantiate(attackPrefabs[currentWep], attackSpawns[1]);
+                    script = bullet.GetComponent<BasicParticleScript>();
+                    script.horiVel = script.velocity/2;
+                    script.vertVel = -script.velocity/2;
+                    break;
+                case "Down":
+                    bullet = Instantiate(attackPrefabs[currentWep], attackSpawns[2]);
+                    script = bullet.GetComponent<BasicParticleScript>();
+                    script.horiVel = 0;
+                    script.vertVel = -script.velocity;
+                    break;
+                case "leftDown":
+                    bullet = Instantiate(attackPrefabs[currentWep], attackSpawns[3]);
+                    script = bullet.GetComponent<BasicParticleScript>();
+                    script.horiVel = -script.velocity / 2;
+                    script.vertVel = -script.velocity / 2;
+                    break;
+                case "left":
+                    bullet = Instantiate(attackPrefabs[currentWep], attackSpawns[4]);
+                    script = bullet.GetComponent<BasicParticleScript>();
+                    script.horiVel = -script.velocity;
+                    script.vertVel = 0;
+                    break;
+                case "leftUp":
+                    bullet = Instantiate(attackPrefabs[currentWep], attackSpawns[5]);
+                    script = bullet.GetComponent<BasicParticleScript>();
+                    script.horiVel = -script.velocity / 2;
+                    script.vertVel = script.velocity / 2;
+                    break;
+                case "Up":
+                    bullet = Instantiate(attackPrefabs[currentWep], attackSpawns[6]);
+                    script = bullet.GetComponent<BasicParticleScript>();
+                    script.horiVel = 0;
+                    script.vertVel = script.velocity;
+                    break;
+                case "rightUp":
+                    bullet = Instantiate(attackPrefabs[currentWep], attackSpawns[7]);
+                    script = bullet.GetComponent<BasicParticleScript>();
+                    script.horiVel = script.velocity / 2;
+                    script.vertVel = script.velocity / 2;
+                    break;
+                default:
+                    bullet = Instantiate(attackPrefabs[currentWep], attackSpawns[0]);
+                    script = bullet.GetComponent<BasicParticleScript>();
+                    script.horiVel = script.velocity;
+                    script.vertVel = 0;
+                    break;
+            }
+        }
     }
 
     //Just using this as a basis for very simple movement
@@ -112,25 +225,30 @@ public class PlayerScript : MonoBehaviour
             airJumps--;
             control = true;
         }
+        //if you wish to require input toward wall to walljump then add && rightInput
         if (jumpInput && !onGround && rightWallPress && !leftWallPress)
         {
-            WallJump(-1, "left");
+            WallJump(-1);
         }
+        //if you wish to require input toward wall to walljump then add && leftInput
         if (jumpInput && !onGround && !rightWallPress && leftWallPress)
         {
-            WallJump(1, "right");
+            WallJump(1);
         }
         if (control == true || onGround)
         {
             //Debug.Log("Good on walk");
             if (leftInput && !leftWallPress)
             {
-                Debug.Log("Initiating lateral movement");
+                //Debug.Log("Initiating lateral movement");
                 rb.velocity = new Vector2(-moveSpeed, rb.velocity.y);
+                horiAim = "left";
             }
             if (rightInput && !rightWallPress)
             {
+                //Debug.Log("Initiating lateral movement");
                 rb.velocity = new Vector2(moveSpeed, rb.velocity.y);
+                horiAim = "right";
             }
             if (leftInput && leftWallPress)
             {
@@ -160,7 +278,7 @@ public class PlayerScript : MonoBehaviour
         rb.velocity = new Vector2(0, jumpheight);
     }
 
-    private void WallJump(int direction, string leftOrRight)
+    private void WallJump(int direction)
     {
         rb.velocity = new Vector2((moveSpeed * direction), jumpheight);
         control = false;
