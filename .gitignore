@@ -56,7 +56,8 @@ ExportedObj/
 */285FinalProject/.unitypackage
 
 # Crashlytics generated file
-crashlytics-build.properties
+/285FinalProject/crashlytics-build.properties
+
 #Mac Ignores
 # General
 /285FinalProject/.DS_Store
@@ -94,7 +95,8 @@ Icon
 /285FinalProject/ehthumbs_vista.db
 
 # Dump file
-*.stackdump
+*/285FinalProject/.stackdump
+
 # Folder config file
 /285FinalProject/[Dd]esktop.ini
 
