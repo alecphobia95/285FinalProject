@@ -7,21 +7,23 @@ public class PlayerScript : MonoBehaviour
     public float moveSpeed;
     public float jumpStrength;
     public int maxJumps;
+    public float gravity, reducedGravity;
     public Rigidbody2D rb;
+
     public Transform groundCheck;
-    public Transform rightCheck;
-    public Transform leftCheck;
+    public Transform[] rightCheck;
+    public Transform[] leftCheck;
     public Transform enemyCheck;
-
-    public Transform[] attackSpawns;
-
-    private int currentWep;
-    public GameObject[] attackPrefabs;
-
     public float checkRadius;
     public float checkMookRadius;
     public LayerMask whatIsGround;
     public LayerMask whatIsMook;
+
+    public Transform[] attackSpawns;
+    public GameObject[] attackPrefabs;
+    public float[] attackCooldowns;
+    private bool[] canShoot;
+    private int currentWep;
 
     private bool control;
     private bool onGround, onMook;
@@ -29,27 +31,28 @@ public class PlayerScript : MonoBehaviour
     private bool leftInput, rightInput, upInput, downInput, jumpInput, jumpHold, shootInput;
     private int airJumps;
     private string horiAim, vertAim, aim;
-    
-    private float gravity, halfGravity;
 
     // Use this for initialization
     void Start()
     {
         onGround = false;
         control = true;
-        gravity = rb.gravityScale;
-        halfGravity = rb.gravityScale * .5f;
         horiAim = "right";
         vertAim = "";
         currentWep = 0;
+        rb.gravityScale = gravity;
+        SetUpArrays();
+        ResetCooldowns();
     }
 
     private void FixedUpdate()
     {
         onGround = Physics2D.OverlapCircle(groundCheck.transform.position, checkRadius, whatIsGround);
         onMook = Physics2D.OverlapCircle(enemyCheck.transform.position, checkMookRadius, whatIsMook);
-        rightWallPress = Physics2D.OverlapCircle(rightCheck.transform.position, checkRadius, whatIsGround);
-        leftWallPress = Physics2D.OverlapCircle(leftCheck.transform.position, checkRadius, whatIsGround);
+        rightWallPress = (Physics2D.OverlapCircle(rightCheck[0].transform.position, checkRadius, whatIsGround) ||
+            Physics2D.OverlapCircle(rightCheck[1].transform.position, checkRadius, whatIsGround));
+        leftWallPress = (Physics2D.OverlapCircle(leftCheck[0].transform.position, checkRadius, whatIsGround) ||
+            Physics2D.OverlapCircle(leftCheck[1].transform.position, checkRadius, whatIsGround));
     }
 
     // Update is called once per frame
@@ -147,68 +150,98 @@ public class PlayerScript : MonoBehaviour
 
     void HandleShooting()
     {
-        if (shootInput)
+        if (canShoot[currentWep])
         {
-            GameObject bullet;
-            BasicParticleScript script;
-            Debug.Log(aim);
-            switch (aim)
+            if (shootInput)
             {
-                case "right":
-                    bullet = Instantiate(attackPrefabs[currentWep], attackSpawns[0]);
-                    script = bullet.GetComponent<BasicParticleScript>();
-                    script.horiVel = script.velocity;
-                    script.vertVel = 0;
-                    break;
-                case "rightDown":
-                    bullet = Instantiate(attackPrefabs[currentWep], attackSpawns[1]);
-                    script = bullet.GetComponent<BasicParticleScript>();
-                    script.horiVel = script.velocity/2;
-                    script.vertVel = -script.velocity/2;
-                    break;
-                case "Down":
-                    bullet = Instantiate(attackPrefabs[currentWep], attackSpawns[2]);
-                    script = bullet.GetComponent<BasicParticleScript>();
-                    script.horiVel = 0;
-                    script.vertVel = -script.velocity;
-                    break;
-                case "leftDown":
-                    bullet = Instantiate(attackPrefabs[currentWep], attackSpawns[3]);
-                    script = bullet.GetComponent<BasicParticleScript>();
-                    script.horiVel = -script.velocity / 2;
-                    script.vertVel = -script.velocity / 2;
-                    break;
-                case "left":
-                    bullet = Instantiate(attackPrefabs[currentWep], attackSpawns[4]);
-                    script = bullet.GetComponent<BasicParticleScript>();
-                    script.horiVel = -script.velocity;
-                    script.vertVel = 0;
-                    break;
-                case "leftUp":
-                    bullet = Instantiate(attackPrefabs[currentWep], attackSpawns[5]);
-                    script = bullet.GetComponent<BasicParticleScript>();
-                    script.horiVel = -script.velocity / 2;
-                    script.vertVel = script.velocity / 2;
-                    break;
-                case "Up":
-                    bullet = Instantiate(attackPrefabs[currentWep], attackSpawns[6]);
-                    script = bullet.GetComponent<BasicParticleScript>();
-                    script.horiVel = 0;
-                    script.vertVel = script.velocity;
-                    break;
-                case "rightUp":
-                    bullet = Instantiate(attackPrefabs[currentWep], attackSpawns[7]);
-                    script = bullet.GetComponent<BasicParticleScript>();
-                    script.horiVel = script.velocity / 2;
-                    script.vertVel = script.velocity / 2;
-                    break;
-                default:
-                    bullet = Instantiate(attackPrefabs[currentWep], attackSpawns[0]);
-                    script = bullet.GetComponent<BasicParticleScript>();
-                    script.horiVel = script.velocity;
-                    script.vertVel = 0;
-                    break;
+                GameObject bullet;
+                BasicParticleScript script;
+                //Debug.Log(aim);
+                switch (aim)
+                {
+                    case "right":
+                        bullet = Instantiate(attackPrefabs[currentWep], attackSpawns[0]);
+                        script = bullet.GetComponent<BasicParticleScript>();
+                        script.horiVel = script.velocity;
+                        script.vertVel = 0;
+                        break;
+                    case "rightDown":
+                        bullet = Instantiate(attackPrefabs[currentWep], attackSpawns[1]);
+                        script = bullet.GetComponent<BasicParticleScript>();
+                        script.horiVel = script.velocity * Mathf.Cos(45);
+                        script.vertVel = -script.velocity * Mathf.Cos(45);
+                        break;
+                    case "Down":
+                        bullet = Instantiate(attackPrefabs[currentWep], attackSpawns[2]);
+                        script = bullet.GetComponent<BasicParticleScript>();
+                        script.horiVel = 0;
+                        script.vertVel = -script.velocity;
+                        break;
+                    case "leftDown":
+                        bullet = Instantiate(attackPrefabs[currentWep], attackSpawns[3]);
+                        script = bullet.GetComponent<BasicParticleScript>();
+                        script.horiVel = -script.velocity * Mathf.Cos(45);
+                        script.vertVel = -script.velocity * Mathf.Cos(45);
+                        break;
+                    case "left":
+                        bullet = Instantiate(attackPrefabs[currentWep], attackSpawns[4]);
+                        script = bullet.GetComponent<BasicParticleScript>();
+                        script.horiVel = -script.velocity;
+                        script.vertVel = 0;
+                        break;
+                    case "leftUp":
+                        bullet = Instantiate(attackPrefabs[currentWep], attackSpawns[5]);
+                        script = bullet.GetComponent<BasicParticleScript>();
+                        script.horiVel = -script.velocity * Mathf.Cos(45);
+                        script.vertVel = script.velocity * Mathf.Cos(45);
+                        break;
+                    case "Up":
+                        bullet = Instantiate(attackPrefabs[currentWep], attackSpawns[6]);
+                        script = bullet.GetComponent<BasicParticleScript>();
+                        script.horiVel = 0;
+                        script.vertVel = script.velocity;
+                        break;
+                    case "rightUp":
+                        bullet = Instantiate(attackPrefabs[currentWep], attackSpawns[7]);
+                        script = bullet.GetComponent<BasicParticleScript>();
+                        script.horiVel = script.velocity * Mathf.Cos(45);
+                        script.vertVel = script.velocity * Mathf.Cos(45);
+                        break;
+                    default:
+                        bullet = Instantiate(attackPrefabs[currentWep], attackSpawns[0]);
+                        script = bullet.GetComponent<BasicParticleScript>();
+                        script.horiVel = script.velocity;
+                        script.vertVel = 0;
+                        break;
+                }
+                canShoot[currentWep] = false;
+                StartCoroutine(ReadyToShoot(currentWep));
             }
+        }
+        
+    }
+
+    IEnumerator ReadyToShoot(int whichOne)
+    {
+        yield return new WaitForSeconds(attackCooldowns[whichOne]);
+
+        Debug.Log(whichOne);
+
+        canShoot[whichOne] = true;
+    }
+
+    //Used to set up arrays on start that are not initialized before play
+    //Currently only used for private canShoot array
+    void SetUpArrays()
+    {
+        canShoot = new bool[attackCooldowns.Length];
+    }
+
+    void ResetCooldowns()
+    {
+        for(int x = 0; x < canShoot.Length; x++)
+        {
+            canShoot[x] = true;
         }
     }
 
@@ -265,7 +298,7 @@ public class PlayerScript : MonoBehaviour
         }
         if(rb.velocity.y > 0f && jumpHold)
         {
-            rb.gravityScale = halfGravity;
+            rb.gravityScale = reducedGravity;
         }
         else
         {
@@ -282,7 +315,7 @@ public class PlayerScript : MonoBehaviour
     {
         rb.velocity = new Vector2((moveSpeed * direction), jumpStrength);
         control = false;
-        Invoke("ReturnControl", 0.3f);
+        Invoke("ReturnControl", 0.5f);
     }
 
     private void ReturnControl()
