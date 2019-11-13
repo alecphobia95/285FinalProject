@@ -160,7 +160,7 @@ MonoBehaviour:
   moveSpeed: 5
   jumpStrength: 10
   maxJumps: 1
-  gravity: 4
+  gravity: 6
   reducedGravity: 2
   rb: {fileID: 50539552486287694}
   groundCheck: {fileID: 4750169597848254}
@@ -171,6 +171,19 @@ MonoBehaviour:
   - {fileID: 4002786106548036}
   - {fileID: 3582571787738424258}
   enemyCheck: {fileID: 4849395064475892}
+  checkRadius: 0.1
+  checkMookRadius: 0.5
+  whatIsGround:
+    serializedVersion: 2
+    m_Bits: 256
+  whatIsMook:
+    serializedVersion: 2
+    m_Bits: 512
+  pools:
+  - tag: NormBullet
+    prefab: {fileID: 1721621707078912412, guid: 50a1ac6a3814f844e8c64a541d4e7eaa,
+      type: 3}
+    size: 50
   attackSpawns:
   - {fileID: 4557594173669464694}
   - {fileID: 1318808401380420645}
@@ -185,14 +198,6 @@ MonoBehaviour:
   - {fileID: 1721621707078912412, guid: 50a1ac6a3814f844e8c64a541d4e7eaa, type: 3}
   attackCooldowns:
   - 0.1
-  checkRadius: 0.1
-  checkMookRadius: 0.5
-  whatIsGround:
-    serializedVersion: 2
-    m_Bits: 256
-  whatIsMook:
-    serializedVersion: 2
-    m_Bits: 512
 --- !u!1 &1431283142961092
 GameObject:
   m_ObjectHideFlags: 0

@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class BasicParticleScript : MonoBehaviour
 {
+    public GameObject self;
     public Rigidbody2D rb;
 
     public float velocity;

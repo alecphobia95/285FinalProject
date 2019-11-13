@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class PlayerScript : MonoBehaviour
 {
+
+
     public float moveSpeed;
     public float jumpStrength;
     public int maxJumps;
@@ -43,6 +45,7 @@ public class PlayerScript : MonoBehaviour
         rb.gravityScale = gravity;
         SetUpArrays();
         ResetCooldowns();
+
     }
 
     private void FixedUpdate()
@@ -157,75 +160,106 @@ public class PlayerScript : MonoBehaviour
                 GameObject bullet;
                 BasicParticleScript script;
                 //Debug.Log(aim);
+                PoolerScript pS = PoolerScript.instance;
+                Vector3 rotation = Vector3.zero;
+                string tag = attackPrefabs[currentWep].tag;
+                Vector3 position;
                 switch (aim)
                 {
                     case "right":
-                        bullet = Instantiate(attackPrefabs[currentWep], attackSpawns[0]);
+                        rotation.z = 0;
+                        position = attackSpawns[0].position;
+                        pS.SpawnFromPool(tag, position, rotation);
+                        bullet = pS.objectToSpawn;
                         script = bullet.GetComponent<BasicParticleScript>();
                         script.horiVel = script.velocity;
                         script.vertVel = 0;
                         break;
                     case "rightDown":
-                        bullet = Instantiate(attackPrefabs[currentWep], attackSpawns[1]);
+                        rotation.z = -45;
+                        position = attackSpawns[1].position;
+                        pS.SpawnFromPool(tag, position, rotation);
+                        bullet = pS.objectToSpawn;
                         script = bullet.GetComponent<BasicParticleScript>();
                         script.horiVel = script.velocity * Mathf.Cos(45);
                         script.vertVel = -script.velocity * Mathf.Cos(45);
                         break;
                     case "Down":
-                        bullet = Instantiate(attackPrefabs[currentWep], attackSpawns[2]);
+                        rotation.z = -90;
+                        position = attackSpawns[2].position;
+                        pS.SpawnFromPool(tag, position, rotation);
+                        bullet = pS.objectToSpawn;
                         script = bullet.GetComponent<BasicParticleScript>();
                         script.horiVel = 0;
                         script.vertVel = -script.velocity;
                         break;
                     case "leftDown":
-                        bullet = Instantiate(attackPrefabs[currentWep], attackSpawns[3]);
+                        rotation.z = -135;
+                        position = attackSpawns[3].position;
+                        pS.SpawnFromPool(tag, position, rotation);
+                        bullet = pS.objectToSpawn;
                         script = bullet.GetComponent<BasicParticleScript>();
                         script.horiVel = -script.velocity * Mathf.Cos(45);
                         script.vertVel = -script.velocity * Mathf.Cos(45);
                         break;
                     case "left":
-                        bullet = Instantiate(attackPrefabs[currentWep], attackSpawns[4]);
+                        rotation.z = -180;
+                        position = attackSpawns[4].position;
+                        pS.SpawnFromPool(tag, position, rotation);
+                        bullet = pS.objectToSpawn;
                         script = bullet.GetComponent<BasicParticleScript>();
                         script.horiVel = -script.velocity;
                         script.vertVel = 0;
                         break;
                     case "leftUp":
-                        bullet = Instantiate(attackPrefabs[currentWep], attackSpawns[5]);
+                        rotation.z = -225;
+                        position = attackSpawns[5].position;
+                        pS.SpawnFromPool(tag, position, rotation);
+                        bullet = pS.objectToSpawn;
                         script = bullet.GetComponent<BasicParticleScript>();
                         script.horiVel = -script.velocity * Mathf.Cos(45);
                         script.vertVel = script.velocity * Mathf.Cos(45);
                         break;
                     case "Up":
-                        bullet = Instantiate(attackPrefabs[currentWep], attackSpawns[6]);
+                        rotation.z = -270;
+                        position = attackSpawns[6].position;
+                        pS.SpawnFromPool(tag, position, rotation);
+                        bullet = pS.objectToSpawn;
                         script = bullet.GetComponent<BasicParticleScript>();
                         script.horiVel = 0;
                         script.vertVel = script.velocity;
                         break;
                     case "rightUp":
-                        bullet = Instantiate(attackPrefabs[currentWep], attackSpawns[7]);
+                        rotation.z = -315;
+                        position = attackSpawns[7].position;
+                        pS.SpawnFromPool(tag, position, rotation);
+                        bullet = pS.objectToSpawn;
                         script = bullet.GetComponent<BasicParticleScript>();
                         script.horiVel = script.velocity * Mathf.Cos(45);
                         script.vertVel = script.velocity * Mathf.Cos(45);
                         break;
                     default:
-                        bullet = Instantiate(attackPrefabs[currentWep], attackSpawns[0]);
+                        rotation.z = 0;
+                        position = attackSpawns[0].position;
+                        pS.SpawnFromPool(tag, position, rotation);
+                        bullet = pS.objectToSpawn;
                         script = bullet.GetComponent<BasicParticleScript>();
                         script.horiVel = script.velocity;
                         script.vertVel = 0;
                         break;
                 }
+                //Debug.Log(rotation.z);
                 canShoot[currentWep] = false;
                 StartCoroutine(ReadyToShoot(currentWep));
             }
         }
-        
     }
 
     IEnumerator ReadyToShoot(int whichOne)
     {
         yield return new WaitForSeconds(attackCooldowns[whichOne]);
 
-        Debug.Log(whichOne);
+        //Debug.Log(whichOne);
 
         canShoot[whichOne] = true;
     }
