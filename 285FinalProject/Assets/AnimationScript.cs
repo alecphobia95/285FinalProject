@@ -4,47 +4,80 @@ using UnityEngine;
 
 public class AnimationScript : MonoBehaviour
 {
-    public float walkspeed = 10f;
-    public float runSpeed = 20.0f;
+    public float speed = 1.0f;
     public float jumpHeight;
     Animator animController;
     public Rigidbody2D playerRB2D;
     public GameObject player;
 
 
-    public Transform groundCheck;
-    public float groundCheckRadius;
-    public LayerMask thisIsGrounding;
-    private bool grounded;
-
-    private int doubleJump;
-    private int maxJumps;
-    private int count;
 
     // Start is called before the first frame update
     void Start()
     {
         animController = GetComponent<Animator>();
         playerRB2D = GetComponent<Rigidbody2D>();
-        maxJumps = 1;
-        count = 0;
+    
     }
 
 
     private void FixedUpdate()
     {
-        grounded = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, thisIsGrounding);
+
 
     }
 
     void Update()
     {
-        if (Input.GetKey(KeyCode.D))
+        if (Input.GetAxis("Horizontal") > 0)
         {
-            playerRB2D.velocity = new Vector2(walkspeed, playerRB2D.velocity.y);
-            animController.SetBool("isWalking", true);
-            Debug.Log("Moving");
-            }
+            //going right
+            animController.SetBool("isGoingRight", true);
+            transform.position += Vector3.right * speed * Time.deltaTime;
+        }
+
+        if (Input.GetAxis("Horizontal") < 0)
+        {
+            //going left
+            animController.SetBool("isGoingLeft", true);
+            transform.position -= Vector3.right * speed * Time.deltaTime;  //vector3.left is the same as -=vector3.right
+        }
+
+        if (Input.GetAxis("Horizontal") == 0)
+        {
+            animController.SetBool("isGoingRight", false);
+            animController.SetBool("isGoingLeft", false);
+        }
+
+        if (Input.GetAxis("Vertical") > 0)
+        {
+            animController.SetBool("isGoingUp", true);
+            transform.position += Vector3.up * speed * Time.deltaTime;
+        }
+
+        if (Input.GetAxis("Vertical") < 0)
+        {
+            animController.SetBool("isGoingDown", true);
+            transform.position -= Vector3.up * speed * Time.deltaTime;
+        }
+
+        if (Input.GetAxis("Vertical") == 0)
+        {
+            animController.SetBool("isGoingDown", false);
+            animController.SetBool("isGoingUp", false);
+        }
+
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            animController.SetBool("isPunching", true);
+            print("get 'em, Boss!");
+        }
+
+        if (Input.GetKeyUp(KeyCode.P))
+        {
+            animController.SetBool("isPunching",false);
+            print("Slow down, Boss!");
         }
     }
+}
 
