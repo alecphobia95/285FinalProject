@@ -349,6 +349,14 @@ public class PlayerScript : MonoBehaviour
     {
         rb.velocity = new Vector2((moveSpeed * direction), jumpStrength);
         control = false;
+        if(horiAim == "right")
+        {
+            horiAim = "left";
+        }
+        else if (horiAim == "left")
+        {
+            horiAim = "right";
+        }
         Invoke("ReturnControl", 0.5f);
     }
 
