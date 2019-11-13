@@ -1,46 +1,61 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class PlayerScript : MonoBehaviour
 {
+
+
     public float moveSpeed;
-    public float jumpheight;
+    public float jumpStrength;
     public int maxJumps;
+    public float gravity, reducedGravity;
     public Rigidbody2D rb;
+
     public Transform groundCheck;
-    public Transform rightCheck;
-    public Transform leftCheck;
+    public Transform[] rightCheck;
+    public Transform[] leftCheck;
     public Transform enemyCheck;
     public float checkRadius;
     public float checkMookRadius;
     public LayerMask whatIsGround;
     public LayerMask whatIsMook;
 
+    public Transform[] attackSpawns;
+    public GameObject[] attackPrefabs;
+    public float[] attackCooldowns;
+    private bool[] canShoot;
+    private int currentWep;
+
     private bool control;
     private bool onGround, onMook;
     private bool rightWallPress, leftWallPress;
-    private bool leftInput, rightInput, upInput, downInput, jumpInput, jumpHold;
+    private bool leftInput, rightInput, upInput, downInput, jumpInput, jumpHold, shootInput;
     private int airJumps;
-    
-    private float gravity, halfGravity;
+    private string horiAim, vertAim, aim;
 
     // Use this for initialization
     void Start()
     {
         onGround = false;
         control = true;
-        gravity = rb.gravityScale;
-        halfGravity = rb.gravityScale * .5f;
+        horiAim = "right";
+        vertAim = "";
+        currentWep = 0;
+        rb.gravityScale = gravity;
+        SetUpArrays();
+        ResetCooldowns();
+
     }
 
     private void FixedUpdate()
     {
         onGround = Physics2D.OverlapCircle(groundCheck.transform.position, checkRadius, whatIsGround);
         onMook = Physics2D.OverlapCircle(enemyCheck.transform.position, checkMookRadius, whatIsMook);
-        rightWallPress = Physics2D.OverlapCircle(rightCheck.transform.position, checkRadius, whatIsGround);
-        leftWallPress = Physics2D.OverlapCircle(leftCheck.transform.position, checkRadius, whatIsGround);
+        rightWallPress = (Physics2D.OverlapCircle(rightCheck[0].transform.position, checkRadius, whatIsGround) ||
+            Physics2D.OverlapCircle(rightCheck[1].transform.position, checkRadius, whatIsGround));
+        leftWallPress = (Physics2D.OverlapCircle(leftCheck[0].transform.position, checkRadius, whatIsGround) ||
+            Physics2D.OverlapCircle(leftCheck[1].transform.position, checkRadius, whatIsGround));
     }
 
     // Update is called once per frame
@@ -51,6 +66,8 @@ public class PlayerScript : MonoBehaviour
         {
             airJumps = maxJumps;
         }
+        SetPlayerAim();
+        HandleShooting();
         RegularMovment();
         ClearInputs();
     }
@@ -87,6 +104,40 @@ public class PlayerScript : MonoBehaviour
             jumpInput = true;
         }
 
+        if (Input.GetKeyDown(KeyCode.Return))
+        {
+            shootInput = true;
+            //Debug.Log("Enter has been pressed");
+        }
+
+    }
+
+    //This is just to be used for aiming ranged weapons for use in a future switch statement
+    void SetPlayerAim()
+    {
+        aim = "left";
+        if (upInput)
+        {
+            vertAim = "Up";
+        }
+        else if (downInput)
+        {
+            vertAim = "Down";
+        }
+        else
+        {
+            vertAim = "";
+        }
+
+        if(vertAim != "" && (!leftInput && !rightInput))
+        {
+            aim = vertAim;
+        }
+        else
+        {
+            aim = horiAim + vertAim;
+        }
+        //Debug.Log(aim);
     }
 
     void ClearInputs()
@@ -97,6 +148,135 @@ public class PlayerScript : MonoBehaviour
         downInput = false;
         jumpInput = false;
         jumpHold = false;
+        shootInput = false;
+    }
+
+    void HandleShooting()
+    {
+        if (canShoot[currentWep])
+        {
+            if (shootInput)
+            {
+                GameObject bullet;
+                BasicParticleScript script;
+                //Debug.Log(aim);
+                PoolerScript pS = PoolerScript.instance;
+                Vector3 rotation = Vector3.zero;
+                string tag = attackPrefabs[currentWep].tag;
+                Vector3 position;
+                switch (aim)
+                {
+                    case "right":
+                        rotation.z = 0;
+                        position = attackSpawns[0].position;
+                        pS.SpawnFromPool(tag, position, rotation);
+                        bullet = pS.objectToSpawn;
+                        script = bullet.GetComponent<BasicParticleScript>();
+                        script.horiVel = script.velocity;
+                        script.vertVel = 0;
+                        break;
+                    case "rightDown":
+                        rotation.z = -45;
+                        position = attackSpawns[1].position;
+                        pS.SpawnFromPool(tag, position, rotation);
+                        bullet = pS.objectToSpawn;
+                        script = bullet.GetComponent<BasicParticleScript>();
+                        script.horiVel = script.velocity * Mathf.Cos(45);
+                        script.vertVel = -script.velocity * Mathf.Cos(45);
+                        break;
+                    case "Down":
+                        rotation.z = -90;
+                        position = attackSpawns[2].position;
+                        pS.SpawnFromPool(tag, position, rotation);
+                        bullet = pS.objectToSpawn;
+                        script = bullet.GetComponent<BasicParticleScript>();
+                        script.horiVel = 0;
+                        script.vertVel = -script.velocity;
+                        break;
+                    case "leftDown":
+                        rotation.z = -135;
+                        position = attackSpawns[3].position;
+                        pS.SpawnFromPool(tag, position, rotation);
+                        bullet = pS.objectToSpawn;
+                        script = bullet.GetComponent<BasicParticleScript>();
+                        script.horiVel = -script.velocity * Mathf.Cos(45);
+                        script.vertVel = -script.velocity * Mathf.Cos(45);
+                        break;
+                    case "left":
+                        rotation.z = -180;
+                        position = attackSpawns[4].position;
+                        pS.SpawnFromPool(tag, position, rotation);
+                        bullet = pS.objectToSpawn;
+                        script = bullet.GetComponent<BasicParticleScript>();
+                        script.horiVel = -script.velocity;
+                        script.vertVel = 0;
+                        break;
+                    case "leftUp":
+                        rotation.z = -225;
+                        position = attackSpawns[5].position;
+                        pS.SpawnFromPool(tag, position, rotation);
+                        bullet = pS.objectToSpawn;
+                        script = bullet.GetComponent<BasicParticleScript>();
+                        script.horiVel = -script.velocity * Mathf.Cos(45);
+                        script.vertVel = script.velocity * Mathf.Cos(45);
+                        break;
+                    case "Up":
+                        rotation.z = -270;
+                        position = attackSpawns[6].position;
+                        pS.SpawnFromPool(tag, position, rotation);
+                        bullet = pS.objectToSpawn;
+                        script = bullet.GetComponent<BasicParticleScript>();
+                        script.horiVel = 0;
+                        script.vertVel = script.velocity;
+                        break;
+                    case "rightUp":
+                        rotation.z = -315;
+                        position = attackSpawns[7].position;
+                        pS.SpawnFromPool(tag, position, rotation);
+                        bullet = pS.objectToSpawn;
+                        script = bullet.GetComponent<BasicParticleScript>();
+                        script.horiVel = script.velocity * Mathf.Cos(45);
+                        script.vertVel = script.velocity * Mathf.Cos(45);
+                        break;
+                    default:
+                        rotation.z = 0;
+                        position = attackSpawns[0].position;
+                        pS.SpawnFromPool(tag, position, rotation);
+                        bullet = pS.objectToSpawn;
+                        script = bullet.GetComponent<BasicParticleScript>();
+                        script.horiVel = script.velocity;
+                        script.vertVel = 0;
+                        break;
+                }
+                //Debug.Log(rotation.z);
+                canShoot[currentWep] = false;
+                StartCoroutine(ReadyToShoot(currentWep));
+            }
+        }
+    }
+
+    IEnumerator ReadyToShoot(int whichOne)
+    {
+        yield return new WaitForSeconds(attackCooldowns[whichOne]);
+
+        //Debug.Log(whichOne);
+
+        canShoot[whichOne] = true;
+    }
+
+    //Used to set up arrays on start that are not initialized before play
+    //Currently only used for private canShoot array
+    void SetUpArrays()
+    {
+        canShoot = new bool[attackCooldowns.Length];
+    }
+
+    void ResetCooldowns()
+    {
+        for(int x = 0; x < canShoot.Length; x++)
+        {
+            canShoot[x] = true;
+        }
     }
 
     //Just using this as a basis for very simple movement
@@ -112,25 +292,30 @@ public class PlayerScript : MonoBehaviour
             airJumps--;
             control = true;
         }
+        //if you wish to require input toward wall to walljump then add && rightInput
         if (jumpInput && !onGround && rightWallPress && !leftWallPress)
         {
-            WallJump(-1, "left");
+            WallJump(-1);
         }
+        //if you wish to require input toward wall to walljump then add && leftInput
         if (jumpInput && !onGround && !rightWallPress && leftWallPress)
         {
-            WallJump(1, "right");
+            WallJump(1);
         }
         if (control == true || onGround)
         {
             //Debug.Log("Good on walk");
             if (leftInput && !leftWallPress)
             {
-                Debug.Log("Initiating lateral movement");
+                //Debug.Log("Initiating lateral movement");
                 rb.velocity = new Vector2(-moveSpeed, rb.velocity.y);
+                horiAim = "left";
             }
             if (rightInput && !rightWallPress)
             {
+                //Debug.Log("Initiating lateral movement");
                 rb.velocity = new Vector2(moveSpeed, rb.velocity.y);
+                horiAim = "right";
             }
             if (leftInput && leftWallPress)
             {
@@ -147,7 +332,7 @@ public class PlayerScript : MonoBehaviour
         }
         if(rb.velocity.y > 0f && jumpHold)
         {
-            rb.gravityScale = halfGravity;
+            rb.gravityScale = reducedGravity;
         }
         else
         {
@@ -157,14 +342,14 @@ public class PlayerScript : MonoBehaviour
 
     private void Jump()
     {
-        rb.velocity = new Vector2(0, jumpheight);
+        rb.velocity = new Vector2(0, jumpStrength);
     }
 
-    private void WallJump(int direction, string leftOrRight)
+    private void WallJump(int direction)
     {
-        rb.velocity = new Vector2((moveSpeed * direction), jumpheight);
+        rb.velocity = new Vector2((moveSpeed * direction), jumpStrength);
         control = false;
-        Invoke("ReturnControl", 0.3f);
+        Invoke("ReturnControl", 0.5f);
     }
 
     private void ReturnControl()
