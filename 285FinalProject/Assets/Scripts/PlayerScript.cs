@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class PlayerScript : MonoBehaviour
 {
-
-
     public float moveSpeed;
     public float jumpStrength;
     public int maxJumps;
@@ -30,7 +28,7 @@ public class PlayerScript : MonoBehaviour
     private bool control;
     private bool onGround, onMook;
     private bool rightWallPress, leftWallPress;
-    private bool leftInput, rightInput, upInput, downInput, jumpInput, jumpHold, shootInput;
+    private bool leftInput, rightInput, upInput, downInput, jumpInput, jumpHold, shootInput, switchWepInput;
     private int airJumps;
     private string horiAim, vertAim, aim;
 
@@ -67,6 +65,7 @@ public class PlayerScript : MonoBehaviour
             airJumps = maxJumps;
         }
         SetPlayerAim();
+        CurrentWeaponSelect();
         HandleShooting();
         RegularMovment();
         ClearInputs();
@@ -109,6 +108,10 @@ public class PlayerScript : MonoBehaviour
             shootInput = true;
             //Debug.Log("Enter has been pressed");
         }
+        if (Input.GetKeyDown(KeyCode.Tab))
+        {
+            switchWepInput = true;
+        }
 
     }
 
@@ -140,6 +143,19 @@ public class PlayerScript : MonoBehaviour
         //Debug.Log(aim);
     }
 
+    void CurrentWeaponSelect()
+    {
+        if (switchWepInput)
+        {
+            currentWep++;
+            if (currentWep >= attackPrefabs.Length)
+            {
+                currentWep = 0;
+            }
+            TempUIScript.instance.CurrentWep(currentWep);
+        }
+    }
+
     void ClearInputs()
     {
         leftInput = false;
@@ -149,6 +165,7 @@ public class PlayerScript : MonoBehaviour
         jumpInput = false;
         jumpHold = false;
         shootInput = false;
+        switchWepInput = false;
     }
 
     void HandleShooting()
@@ -157,8 +174,7 @@ public class PlayerScript : MonoBehaviour
         {
             if (shootInput)
             {
-                GameObject bullet;
-                BasicParticleScript script;
+                GameObject attack;
                 //Debug.Log(aim);
                 PoolerScript pS = PoolerScript.instance;
                 Vector3 rotation = Vector3.zero;
@@ -170,82 +186,154 @@ public class PlayerScript : MonoBehaviour
                         rotation.z = 0;
                         position = attackSpawns[0].position;
                         pS.SpawnFromPool(tag, position, rotation);
-                        bullet = pS.objectToSpawn;
-                        script = bullet.GetComponent<BasicParticleScript>();
-                        script.horiVel = script.velocity;
-                        script.vertVel = 0;
+                        attack = pS.objectToSpawn;
+                        if (attack.name.Contains("Ranged"))
+                        {
+                            BasicParticleScript script = attack.GetComponent<BasicParticleScript>();
+                            script.horiVel = script.velocity;
+                            script.vertVel = 0;
+                        }
+                        if (attack.name.Contains("Melee"))
+                        {
+                            MeleeAttackScript script = attack.GetComponent<MeleeAttackScript>();
+                            script.HideMe();
+                        }
                         break;
                     case "rightDown":
                         rotation.z = -45;
                         position = attackSpawns[1].position;
                         pS.SpawnFromPool(tag, position, rotation);
-                        bullet = pS.objectToSpawn;
-                        script = bullet.GetComponent<BasicParticleScript>();
-                        script.horiVel = script.velocity * Mathf.Cos(45);
-                        script.vertVel = -script.velocity * Mathf.Cos(45);
+                        attack = pS.objectToSpawn;
+                        if (attack.name.Contains("Ranged"))
+                        {
+                            BasicParticleScript script = attack.GetComponent<BasicParticleScript>();
+                            script.horiVel = script.velocity * Mathf.Cos(45);
+                            script.vertVel = -script.velocity * Mathf.Cos(45);
+                        }
+                        if (attack.name.Contains("Melee"))
+                        {
+                            MeleeAttackScript script = attack.GetComponent<MeleeAttackScript>();
+                            script.HideMe();
+                        }
                         break;
                     case "Down":
                         rotation.z = -90;
                         position = attackSpawns[2].position;
                         pS.SpawnFromPool(tag, position, rotation);
-                        bullet = pS.objectToSpawn;
-                        script = bullet.GetComponent<BasicParticleScript>();
-                        script.horiVel = 0;
-                        script.vertVel = -script.velocity;
+                        attack = pS.objectToSpawn;
+                        if (attack.name.Contains("Ranged"))
+                        {
+                            BasicParticleScript script = attack.GetComponent<BasicParticleScript>();
+                            script.horiVel = 0;
+                            script.vertVel = -script.velocity;
+                        }
+                        if (attack.name.Contains("Melee"))
+                        {
+                            MeleeAttackScript script = attack.GetComponent<MeleeAttackScript>();
+                            script.HideMe();
+                        }
                         break;
                     case "leftDown":
                         rotation.z = -135;
                         position = attackSpawns[3].position;
                         pS.SpawnFromPool(tag, position, rotation);
-                        bullet = pS.objectToSpawn;
-                        script = bullet.GetComponent<BasicParticleScript>();
-                        script.horiVel = -script.velocity * Mathf.Cos(45);
-                        script.vertVel = -script.velocity * Mathf.Cos(45);
+                        attack = pS.objectToSpawn;
+                        if (attack.name.Contains("Ranged"))
+                        {
+                            BasicParticleScript script = attack.GetComponent<BasicParticleScript>();
+                            script.horiVel = -script.velocity * Mathf.Cos(45);
+                            script.vertVel = -script.velocity * Mathf.Cos(45);
+                        }
+                        if (attack.name.Contains("Melee"))
+                        {
+                            MeleeAttackScript script = attack.GetComponent<MeleeAttackScript>();
+                            script.HideMe();
+                        }
                         break;
                     case "left":
                         rotation.z = -180;
                         position = attackSpawns[4].position;
                         pS.SpawnFromPool(tag, position, rotation);
-                        bullet = pS.objectToSpawn;
-                        script = bullet.GetComponent<BasicParticleScript>();
-                        script.horiVel = -script.velocity;
-                        script.vertVel = 0;
+                        attack = pS.objectToSpawn;
+                        if (attack.name.Contains("Ranged"))
+                        {
+                            BasicParticleScript script = attack.GetComponent<BasicParticleScript>();
+                            script.horiVel = -script.velocity;
+                            script.vertVel = 0;
+                        }
+                        if (attack.name.Contains("Melee"))
+                        {
+                            MeleeAttackScript script = attack.GetComponent<MeleeAttackScript>();
+                            script.HideMe();
+                        }
                         break;
                     case "leftUp":
                         rotation.z = -225;
                         position = attackSpawns[5].position;
                         pS.SpawnFromPool(tag, position, rotation);
-                        bullet = pS.objectToSpawn;
-                        script = bullet.GetComponent<BasicParticleScript>();
-                        script.horiVel = -script.velocity * Mathf.Cos(45);
-                        script.vertVel = script.velocity * Mathf.Cos(45);
+                        attack = pS.objectToSpawn;
+                        if (attack.name.Contains("Ranged"))
+                        {
+                            BasicParticleScript script = attack.GetComponent<BasicParticleScript>();
+                            script.horiVel = -script.velocity * Mathf.Cos(45);
+                            script.vertVel = script.velocity * Mathf.Cos(45);
+                        }
+                        if (attack.name.Contains("Melee"))
+                        {
+                            MeleeAttackScript script = attack.GetComponent<MeleeAttackScript>();
+                            script.HideMe();
+                        }
                         break;
                     case "Up":
                         rotation.z = -270;
                         position = attackSpawns[6].position;
                         pS.SpawnFromPool(tag, position, rotation);
-                        bullet = pS.objectToSpawn;
-                        script = bullet.GetComponent<BasicParticleScript>();
-                        script.horiVel = 0;
-                        script.vertVel = script.velocity;
+                        attack = pS.objectToSpawn;
+                        if (attack.name.Contains("Ranged"))
+                        {
+                            BasicParticleScript script = attack.GetComponent<BasicParticleScript>();
+                            script.horiVel = 0;
+                            script.vertVel = script.velocity;
+                        }
+                        if (attack.name.Contains("Melee"))
+                        {
+                            MeleeAttackScript script = attack.GetComponent<MeleeAttackScript>();
+                            script.HideMe();
+                        }
                         break;
                     case "rightUp":
                         rotation.z = -315;
                         position = attackSpawns[7].position;
                         pS.SpawnFromPool(tag, position, rotation);
-                        bullet = pS.objectToSpawn;
-                        script = bullet.GetComponent<BasicParticleScript>();
-                        script.horiVel = script.velocity * Mathf.Cos(45);
-                        script.vertVel = script.velocity * Mathf.Cos(45);
+                        attack = pS.objectToSpawn;
+                        if (attack.name.Contains("Ranged"))
+                        {
+                            BasicParticleScript script = attack.GetComponent<BasicParticleScript>();
+                            script.horiVel = script.velocity * Mathf.Cos(45);
+                            script.vertVel = script.velocity * Mathf.Cos(45);
+                        }
+                        if (attack.name.Contains("Melee"))
+                        {
+                            MeleeAttackScript script = attack.GetComponent<MeleeAttackScript>();
+                            script.HideMe();
+                        }
                         break;
                     default:
                         rotation.z = 0;
                         position = attackSpawns[0].position;
                         pS.SpawnFromPool(tag, position, rotation);
-                        bullet = pS.objectToSpawn;
-                        script = bullet.GetComponent<BasicParticleScript>();
-                        script.horiVel = script.velocity;
-                        script.vertVel = 0;
+                        attack = pS.objectToSpawn;
+                        if (attack.name.Contains("Ranged"))
+                        {
+                            BasicParticleScript script = attack.GetComponent<BasicParticleScript>();
+                            script.horiVel = script.velocity;
+                            script.vertVel = 0;
+                        }
+                        if (attack.name.Contains("Melee"))
+                        {
+                            MeleeAttackScript script = attack.GetComponent<MeleeAttackScript>();
+                            script.HideMe();
+                        }
                         break;
                 }
                 //Debug.Log(rotation.z);

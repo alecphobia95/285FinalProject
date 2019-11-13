@@ -6,6 +6,8 @@ public class PoolerScript : MonoBehaviour
 {
     public static PoolerScript instance;
 
+    public GameObject player;
+
     public List<Pool> pools;
     public Dictionary<string, Queue<GameObject>> poolerDictionary = new Dictionary<string, Queue<GameObject>>();
 
@@ -38,6 +40,11 @@ public class PoolerScript : MonoBehaviour
             for (int x = 0; x < pool.size; x++)
             {
                 GameObject obj = Instantiate(pool.prefab);
+                if (obj.name.Contains("Melee"))
+                {
+                    player = GameObject.FindGameObjectsWithTag("Player")[0];
+                    obj.transform.parent = player.transform;
+                }
                 obj.SetActive(false);
                 objectPool.Enqueue(obj);
             }
