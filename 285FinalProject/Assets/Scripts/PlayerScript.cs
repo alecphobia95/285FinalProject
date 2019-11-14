@@ -11,6 +11,7 @@ public class PlayerScript : MonoBehaviour
     public int maxJumps;
     public float gravity, reducedGravity;
     public Rigidbody2D rb;
+    Animator animController;
 
     public Transform groundCheck;
     public Transform[] rightCheck;
@@ -88,6 +89,7 @@ public class PlayerScript : MonoBehaviour
         if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow))
         {
             rightInput = true;
+            
         }
 
         if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow))
