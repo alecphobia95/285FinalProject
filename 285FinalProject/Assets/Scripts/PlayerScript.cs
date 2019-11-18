@@ -47,6 +47,8 @@ public class PlayerScript : MonoBehaviour
         SetUpArrays();
         ResetCooldowns();
 
+        animController = GetComponent<Animator>();
+
     }
 
     private void FixedUpdate()
@@ -283,10 +285,12 @@ public class PlayerScript : MonoBehaviour
 
     //Just using this as a basis for very simple movement
     void RegularMovment()
-    {
+    {//up biches!
         if (jumpInput && onGround)
         {
             Jump();
+            animController.SetBool("isJumping", true);
+            Debug.Log("Jump on it");
         }
         if (jumpInput && !onGround && airJumps > 0 && !rightWallPress && !leftWallPress)
         {
@@ -309,15 +313,22 @@ public class PlayerScript : MonoBehaviour
             //Debug.Log("Good on walk");
             if (leftInput && !leftWallPress)
             {
-                //Debug.Log("Initiating lateral movement");
+                //Debug.Log("Initiating lateral movement"); --Left
                 rb.velocity = new Vector2(-moveSpeed, rb.velocity.y);
                 horiAim = "left";
+                ///
+                animController.SetBool("isWalking", true);
+                Debug.Log("Walking on Water");
+
             }
             if (rightInput && !rightWallPress)
             {
-                //Debug.Log("Initiating lateral movement");
+                //Debug.Log("Initiating lateral movement"); --Right
                 rb.velocity = new Vector2(moveSpeed, rb.velocity.y);
                 horiAim = "right";
+                ///
+                animController.SetBool("isWalking", true);
+                Debug.Log("Walking on Water");
             }
             if (leftInput && leftWallPress)
             {

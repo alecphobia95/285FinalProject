@@ -401,5 +401,15 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 7815371044791450175, guid: 646d72606b4581b4d86d43efccf2b9cd,
         type: 3}
+    - target: {fileID: 9165352355772109897, guid: a436815da4037b04a8a7c57083f3f039,
+        type: 3}
+      propertyPath: maxJumps
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 20659315573966288, guid: a436815da4037b04a8a7c57083f3f039,
+        type: 3}
+      propertyPath: orthographic size
+      value: 2.6
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a436815da4037b04a8a7c57083f3f039, type: 3}
