@@ -6,6 +6,7 @@ public class PlayerScript : MonoBehaviour
 {
     public float moveSpeed;
     public float jumpStrength;
+    public float dashDuration;
     public int maxJumps;
     public float gravity, reducedGravity;
     public Rigidbody2D rb;
@@ -25,11 +26,12 @@ public class PlayerScript : MonoBehaviour
     private bool[] canShoot;
     private int currentWep;
 
-    private bool control;
+    private bool control, dashing, canDash;
     private bool onGround, onMook;
     private bool rightWallPress, leftWallPress;
-    private bool leftInput, rightInput, upInput, downInput, jumpInput, jumpHold, shootInput, switchWepInput;
-    private int airJumps;
+    private bool leftInput, rightInput, upInput, downInput, leftDashInput, rightDashInput,
+        jumpInput, jumpHold, shootInput, switchWepInput;
+    private int airJumps, direction;
     private string horiAim, vertAim, aim;
 
     // Use this for initialization
@@ -37,13 +39,14 @@ public class PlayerScript : MonoBehaviour
     {
         onGround = false;
         control = true;
+        canDash = true;
+        direction = 1;
         horiAim = "right";
         vertAim = "";
         currentWep = 0;
         rb.gravityScale = gravity;
         SetUpArrays();
         ResetCooldowns();
-
     }
 
     private void FixedUpdate()
@@ -113,6 +116,28 @@ public class PlayerScript : MonoBehaviour
             switchWepInput = true;
         }
 
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            leftDashInput = true;
+        }
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            rightDashInput = true;
+        }
+    }
+
+    void ClearInputs()
+    {
+        leftInput = false;
+        rightInput = false;
+        upInput = false;
+        downInput = false;
+        jumpInput = false;
+        jumpHold = false;
+        shootInput = false;
+        switchWepInput = false;
+        leftDashInput = false;
+        rightDashInput = false;
     }
 
     //This is just to be used for aiming ranged weapons for use in a future switch statement
@@ -156,17 +181,6 @@ public class PlayerScript : MonoBehaviour
         }
     }
 
-    void ClearInputs()
-    {
-        leftInput = false;
-        rightInput = false;
-        upInput = false;
-        downInput = false;
-        jumpInput = false;
-        jumpHold = false;
-        shootInput = false;
-        switchWepInput = false;
-    }
 
     void HandleShooting()
     {
@@ -373,22 +387,36 @@ public class PlayerScript : MonoBehaviour
         if (jumpInput && onGround)
         {
             Jump();
+            dashing = false;
+            canDash = true;
+            CancelInvoke("EnableDash");
         }
         if (jumpInput && !onGround && airJumps > 0 && !rightWallPress && !leftWallPress)
         {
             Jump();
             airJumps--;
             control = true;
+            dashing = false;
+            canDash = true;
+            CancelInvoke("EnableDash");
         }
         //if you wish to require input toward wall to walljump then add && rightInput
         if (jumpInput && !onGround && rightWallPress && !leftWallPress)
         {
-            WallJump(-1);
+            direction = -1;
+            WallJump();
+            dashing = false;
+            canDash = true;
+            CancelInvoke("EnableDash");
         }
         //if you wish to require input toward wall to walljump then add && leftInput
         if (jumpInput && !onGround && !rightWallPress && leftWallPress)
         {
-            WallJump(1);
+            direction = 1;
+            WallJump();
+            dashing = false;
+            canDash = true;
+            CancelInvoke("EnableDash");
         }
         if (control == true || onGround)
         {
@@ -396,14 +424,24 @@ public class PlayerScript : MonoBehaviour
             if (leftInput && !leftWallPress)
             {
                 //Debug.Log("Initiating lateral movement");
-                rb.velocity = new Vector2(-moveSpeed, rb.velocity.y);
                 horiAim = "left";
+                if (!dashing)
+                {
+                    StopDash();
+                    rb.velocity = new Vector2(-moveSpeed, rb.velocity.y);
+                    direction = 1;
+                }
             }
             if (rightInput && !rightWallPress)
             {
                 //Debug.Log("Initiating lateral movement");
-                rb.velocity = new Vector2(moveSpeed, rb.velocity.y);
                 horiAim = "right";
+                if (!dashing)
+                {
+                    StopDash();
+                    rb.velocity = new Vector2(moveSpeed, rb.velocity.y);
+                    direction = -1;
+                }
             }
             if (leftInput && leftWallPress)
             {
@@ -417,14 +455,54 @@ public class PlayerScript : MonoBehaviour
             {
                 rb.velocity = new Vector2(rb.velocity.x, rb.velocity.y);
             }
+
+            if (canDash)
+            {
+                if ((leftDashInput && !rightDashInput) || (!leftDashInput && rightDashInput))
+                {
+                    dashing = true;
+                    control = false;
+                    canDash = false;
+
+                    if (rightDashInput)
+                    {
+                        direction = 1;
+                        horiAim = "right";
+                    }
+                    if (leftDashInput)
+                    {
+                        direction = -1;
+                        horiAim = "left";
+                    }
+
+                    rb.gravityScale = 0f;
+                    
+                    Invoke("ReturnControl", dashDuration);
+                    Invoke("StopDash", dashDuration);
+                    Invoke("EnableDash", dashDuration * 1.5f);
+                }
+            }
         }
-        if(rb.velocity.y > 0f && jumpHold)
+
+        if (dashing)
         {
-            rb.gravityScale = reducedGravity;
+            if(leftWallPress || rightWallPress)
+            {
+                StopDash();
+            }
+            rb.velocity = new Vector2(moveSpeed * 1.5f * direction, 0f);
         }
-        else
+
+        else if (!dashing)
         {
-            rb.gravityScale = gravity;
+            if (rb.velocity.y > 0f && jumpHold)
+            {
+                rb.gravityScale = reducedGravity;
+            }
+            else
+            {
+                rb.gravityScale = gravity;
+            }
         }
     }
 
@@ -433,7 +511,7 @@ public class PlayerScript : MonoBehaviour
         rb.velocity = new Vector2(0, jumpStrength);
     }
 
-    private void WallJump(int direction)
+    private void WallJump()
     {
         rb.velocity = new Vector2((moveSpeed * direction), jumpStrength);
         control = false;
@@ -451,6 +529,18 @@ public class PlayerScript : MonoBehaviour
     private void ReturnControl()
     {
         control = true;
+    }
+
+    private void EnableDash()
+    {
+        canDash = true;
+    }
+
+    private void StopDash()
+    {
+        control = true;
+        dashing = false;
+        rb.gravityScale = gravity;
     }
 
 }

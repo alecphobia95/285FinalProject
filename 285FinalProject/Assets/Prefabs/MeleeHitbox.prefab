@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 8442838075476411556}
   - component: {fileID: 1116535962866325785}
   - component: {fileID: -4191988707445103847}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: MeleeHitbox
   m_TagString: MeleeSwipe
   m_Icon: {fileID: 0}

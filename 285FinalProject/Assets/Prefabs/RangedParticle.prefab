@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 6895423518966820483}
   - component: {fileID: 5762923834188154173}
   - component: {fileID: -7983481243029409459}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: RangedParticle
   m_TagString: BasicBullet
   m_Icon: {fileID: 0}
