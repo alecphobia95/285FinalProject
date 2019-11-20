@@ -133,6 +133,7 @@ GameObject:
   - component: {fileID: 2789717371998732422}
   - component: {fileID: 2801052017224567160}
   - component: {fileID: 2767599870235951857}
+  - component: {fileID: -8359309423202111101}
   m_Layer: 9
   m_Name: Mech
   m_TagString: Player
@@ -263,12 +264,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d97789be7bc1b6948853a9de73ef1155, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cameraScript: {fileID: -8359309423202111101}
   moveSpeed: 5
   jumpStrength: 10
   dashDuration: 0.25
   maxJumps: 1
   gravity: 6
-  reducedGravity: 2
+  reducedGravity: 1
   rb: {fileID: 2801052017224567160}
   groundCheck: {fileID: 2773153926197938824}
   rightCheck:
@@ -305,6 +307,20 @@ MonoBehaviour:
   slippery: 0
   drainRate: 24
   refuelRate: 12
+--- !u!114 &-8359309423202111101
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2767599870235951858}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 576138d8554ec81418a3e385f62d4748, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  thisTransform: {fileID: 2766145400503073064}
+  bounds: 0.1
 --- !u!1 &2767841375146686424
 GameObject:
   m_ObjectHideFlags: 0

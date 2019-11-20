@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class MechScript : MonoBehaviour
 {
+    //Remember to set this up on player script later
+    public CameraMoveScript cameraScript;
+
     public float moveSpeed;
     public float jumpStrength;
     public float dashDuration;
@@ -44,7 +47,7 @@ public class MechScript : MonoBehaviour
         onGround = false;
         control = true;
         canDash = true;
-        piloting = true;
+        piloting = false;
         direction = 1;
         fuelSupply = 100;
         horiAim = "right";
@@ -53,6 +56,7 @@ public class MechScript : MonoBehaviour
         rb.gravityScale = gravity;
         SetUpArrays();
         ResetCooldowns();
+        SetCamMove();
     }
 
     private void FixedUpdate()
@@ -386,7 +390,7 @@ public class MechScript : MonoBehaviour
             }
         }
         FuelMeterScript.instance.fuelStatus = fuelSupply;
-        Debug.Log(fuelSupply);
+        //Debug.Log(fuelSupply);
     }
 
     IEnumerator ReadyToShoot(int whichOne)
@@ -577,6 +581,18 @@ public class MechScript : MonoBehaviour
         control = true;
         dashing = false;
         rb.gravityScale = gravity;
+    }
+
+    private void SetCamMove()
+    {
+        if (piloting)
+        {
+            cameraScript.enabled = true;
+        }
+        else
+        {
+            cameraScript.enabled = false;
+        }
     }
 
 }
