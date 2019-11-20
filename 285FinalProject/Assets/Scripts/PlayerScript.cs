@@ -4,7 +4,9 @@ using UnityEngine;
 
 public class PlayerScript : MonoBehaviour
 {
-
+    //ANIMATION
+    Animator animController;
+    public GameObject player;
 
     public float moveSpeed;
     public float jumpStrength;
@@ -34,6 +36,10 @@ public class PlayerScript : MonoBehaviour
     private int airJumps;
     private string horiAim, vertAim, aim;
 
+
+    [HideInInspector] public bool facingRight = true;
+    
+
     // Use this for initialization
     void Start()
     {
@@ -46,6 +52,8 @@ public class PlayerScript : MonoBehaviour
         SetUpArrays();
         ResetCooldowns();
 
+        //Animation
+        animController = GetComponent<Animator>();
     }
 
     private void FixedUpdate()
@@ -70,7 +78,70 @@ public class PlayerScript : MonoBehaviour
         HandleShooting();
         RegularMovment();
         ClearInputs();
+
+        AnimationUpdates();
     }
+
+    void AnimationUpdates()
+    {
+        animController = GetComponent<Animator>();
+        ///To the Right
+        if (Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow))
+        {
+            animController.SetBool("isGoingRight", true);
+            //animController.SetBool("isIdling", false);
+            Debug.Log("To The Right");
+        }
+
+        if (Input.GetKeyUp(KeyCode.D) || Input.GetKeyUp(KeyCode.RightArrow))
+        {
+            animController.SetBool("isGoingRight", false);
+            //animController.SetBool("isIdling", false);
+            Debug.Log("Right Stop");
+        }
+
+        ///To the Left
+        if (Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.LeftArrow))
+        {
+            animController.SetBool("isGoingRight", true);
+            //animController.SetBool("isIdling", false);
+            Debug.Log("To The Left");
+        }
+
+        if (Input.GetKeyUp(KeyCode.S) || Input.GetKeyUp(KeyCode.LeftArrow))
+        {
+            animController.SetBool("isGoingRight", false);
+            //animController.SetBool("isIdling", false);
+            Debug.Log("Right Stop");
+        }
+
+
+        //Jump On It
+        if (Input.GetKeyUp(KeyCode.Space))
+        {
+            animController.SetBool("isJumping", false);
+
+        }
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            animController.SetBool("isJumping", true);
+        }
+
+        ///Put 'Em Up
+        if (Input.GetKeyDown(KeyCode.Return))
+        {
+            animController.SetBool("isShooting", true);
+            Debug.Log("Enter has been pressed");
+        }
+
+        if (Input.GetKeyUp(KeyCode.Return))
+        {
+            animController.SetBool("isShooting", false);
+            Debug.Log("Enter has been released");
+        }
+
+    }
+   
 
     void GrabInputs()
     {
@@ -98,6 +169,7 @@ public class PlayerScript : MonoBehaviour
         if (Input.GetKey(KeyCode.Space))
         {
             jumpHold = true;
+            
         }
         if (Input.GetKeyDown(KeyCode.Space))
         {
@@ -291,16 +363,19 @@ public class PlayerScript : MonoBehaviour
             Jump();
             airJumps--;
             control = true;
+            animController.SetBool("isGoingRight", false);
         }
         //if you wish to require input toward wall to walljump then add && rightInput
         if (jumpInput && !onGround && rightWallPress && !leftWallPress)
         {
             WallJump(-1);
+            //animController.SetBool("isClinging", true);
         }
         //if you wish to require input toward wall to walljump then add && leftInput
         if (jumpInput && !onGround && !rightWallPress && leftWallPress)
         {
             WallJump(1);
+            //animController.SetBool("isClinging", true);
         }
         if (control == true || onGround)
         {
@@ -310,12 +385,27 @@ public class PlayerScript : MonoBehaviour
                 //Debug.Log("Initiating lateral movement");
                 rb.velocity = new Vector2(-moveSpeed, rb.velocity.y);
                 horiAim = "left";
+
+                if(facingRight)
+                {
+                    facingRight = false;
+                    player.transform.localScale = new Vector3(-player.transform.localScale.x, player.transform.localScale.y, player.transform.localScale.z);
+                    Debug.Log("Flip it real good");
+                }
             }
             if (rightInput && !rightWallPress)
             {
                 //Debug.Log("Initiating lateral movement");
                 rb.velocity = new Vector2(moveSpeed, rb.velocity.y);
                 horiAim = "right";
+
+                if (!facingRight)
+                {
+                    facingRight = true;
+                    player.transform.localScale = new Vector3(-player.transform.localScale.x, player.transform.localScale.y, player.transform.localScale.z);
+                    Debug.Log("Flip it real good");
+                }
+
             }
             if (leftInput && leftWallPress)
             {
