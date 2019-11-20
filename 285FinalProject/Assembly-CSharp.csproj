@@ -63,6 +63,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Scripts\BasicParticleScript.cs" />
+    <Compile Include="Assets\Scripts\FuelMeterScript.cs" />
+    <Compile Include="Assets\Scripts\MechScript.cs" />
     <Compile Include="Assets\Scripts\MeleeAttackScript.cs" />
     <Compile Include="Assets\Scripts\PlayerScript.cs" />
     <Compile Include="Assets\Scripts\PoolerScript.cs" />

@@ -49,8 +49,12 @@ MonoBehaviour:
     prefab: {fileID: 1721621707078912412, guid: 50a1ac6a3814f844e8c64a541d4e7eaa,
       type: 3}
     size: 15
-  - tag: MeleeSwipe
-    prefab: {fileID: 3132412400397367123, guid: bda6c340bee2efd4c9ac60bdf53c1637,
+  - tag: MechBullet
+    prefab: {fileID: 7492863947262136700, guid: e34a5620e6a77614eb1d2e2ea4eb8cf9,
+      type: 3}
+    size: 30
+  - tag: MechSwipe
+    prefab: {fileID: 6406930730894430844, guid: 2f2a44fd25504a8429fb0b29c8805917,
       type: 3}
     size: 1
   objectToSpawn: {fileID: 0}
