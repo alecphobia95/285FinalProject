@@ -15,4 +15,13 @@ public class BasicParticleScript : MonoBehaviour
     {
         rb.velocity = new Vector2(horiVel, vertVel);
     }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if(collision.gameObject.layer == 8)
+        {
+            self.SetActive(false);
+        }
+    }
+
 }

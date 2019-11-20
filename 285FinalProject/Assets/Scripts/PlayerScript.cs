@@ -26,6 +26,7 @@ public class PlayerScript : MonoBehaviour
     private bool[] canShoot;
     private int currentWep;
 
+    public bool slippery;
     private bool control, dashing, canDash;
     private bool onGround, onMook;
     private bool rightWallPress, leftWallPress;
@@ -442,6 +443,10 @@ public class PlayerScript : MonoBehaviour
                     rb.velocity = new Vector2(moveSpeed, rb.velocity.y);
                     direction = -1;
                 }
+            }
+            if(!dashing && !leftInput && !rightInput && control && !slippery)
+            {
+                rb.velocity = new Vector2(0, rb.velocity.y);
             }
             if (leftInput && leftWallPress)
             {

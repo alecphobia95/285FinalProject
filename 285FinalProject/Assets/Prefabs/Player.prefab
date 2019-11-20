@@ -145,7 +145,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   moveSpeed: 5
   jumpStrength: 10
-  dashDuration: 0.5
+  dashDuration: 0.25
   maxJumps: 1
   gravity: 6
   reducedGravity: 2
@@ -182,6 +182,7 @@ MonoBehaviour:
   attackCooldowns:
   - 0.1
   - 0.3
+  slippery: 0
 --- !u!1 &1431283142961092
 GameObject:
   m_ObjectHideFlags: 0
