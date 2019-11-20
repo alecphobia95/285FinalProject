@@ -47,7 +47,7 @@ public class MechScript : MonoBehaviour
         onGround = false;
         control = true;
         canDash = true;
-        piloting = false;
+        piloting = true;
         direction = 1;
         fuelSupply = 100;
         horiAim = "right";
