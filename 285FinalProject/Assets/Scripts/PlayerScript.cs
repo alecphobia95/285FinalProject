@@ -23,6 +23,7 @@ public class PlayerScript : MonoBehaviour
     public float checkMookRadius;
     public LayerMask whatIsGround;
     public LayerMask whatIsMook;
+    public LayerMask whatIsMech;
 
     public Transform[] attackSpawns;
     public GameObject[] attackPrefabs;
@@ -31,11 +32,11 @@ public class PlayerScript : MonoBehaviour
     private int currentWep;
 
     public bool slippery;
-    private bool control, dashing, canDash, piloting;
-    private bool onGround, onMook;
-    private bool rightWallPress, leftWallPress;
+    private bool control, dashing, canDash;
+    public bool piloting;
+    private bool onGround, onMook, rightWallPress, leftWallPress;
     private bool leftInput, rightInput, upInput, downInput, leftDashInput, rightDashInput,
-        jumpInput, jumpHold, shootInput, switchWepInput, pilotInput;
+        jumpInput, jumpHold, shootInput, switchWepInput;
     private int airJumps, direction;
     private string horiAim, vertAim, aim;
 
@@ -65,7 +66,8 @@ public class PlayerScript : MonoBehaviour
 
     private void FixedUpdate()
     {
-        onGround = Physics2D.OverlapCircle(groundCheck.transform.position, checkRadius, whatIsGround);
+        onGround = (Physics2D.OverlapCircle(groundCheck.transform.position, checkRadius, whatIsGround) ||
+            Physics2D.OverlapCircle(groundCheck.transform.position, checkRadius, whatIsMech));
         onMook = Physics2D.OverlapCircle(enemyCheck.transform.position, checkMookRadius, whatIsMook);
         rightWallPress = (Physics2D.OverlapCircle(rightCheck[0].transform.position, checkRadius, whatIsGround) ||
             Physics2D.OverlapCircle(rightCheck[1].transform.position, checkRadius, whatIsGround));
@@ -76,9 +78,9 @@ public class PlayerScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        GrabInputs();
         if (!piloting)
         {
+            GrabInputs();
             if (onGround)
             {
                 airJumps = maxJumps;
@@ -87,9 +89,8 @@ public class PlayerScript : MonoBehaviour
             CurrentWeaponSelect();
             HandleShooting();
             RegularMovment();
+            ClearInputs();
         }
-        PilotSwitchCheck();
-        ClearInputs();
     }
 
     void GrabInputs()
@@ -142,10 +143,6 @@ public class PlayerScript : MonoBehaviour
         {
             rightDashInput = true;
         }
-        if (Input.GetKeyDown(KeyCode.Backspace))
-        {
-            pilotInput = true;
-        }
     }
 
     void ClearInputs()
@@ -160,7 +157,6 @@ public class PlayerScript : MonoBehaviour
         switchWepInput = false;
         leftDashInput = false;
         rightDashInput = false;
-        pilotInput = false;
     }
 
     //This is just to be used for aiming ranged weapons for use in a future switch statement
@@ -203,7 +199,6 @@ public class PlayerScript : MonoBehaviour
             TempUIScript.instance.CurrentWep(currentWep);
         }
     }
-
 
     void HandleShooting()
     {
@@ -568,7 +563,7 @@ public class PlayerScript : MonoBehaviour
         rb.gravityScale = gravity;
     }
 
-    private void SetCamMove()
+    public void SetCamMove()
     {
         if (!piloting)
         {
@@ -577,22 +572,6 @@ public class PlayerScript : MonoBehaviour
         else
         {
             cameraScript.enabled = false;
-        }
-    }
-
-    private void PilotSwitchCheck()
-    {
-        if (pilotInput)
-        {
-            if (piloting)
-            {
-                piloting = false;
-            }
-            else if (!piloting)
-            {
-                piloting = true;
-            }
-            SetCamMove();
         }
     }
 

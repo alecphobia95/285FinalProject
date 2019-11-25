@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8855010082000766415}
-  m_Layer: 9
+  m_Layer: 12
   m_Name: AttackSpawnLeft
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -39,7 +39,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6797187822536384464}
-  m_Layer: 9
+  m_Layer: 12
   m_Name: AttackSpawnDown
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -69,7 +69,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1824814696855239232}
-  m_Layer: 9
+  m_Layer: 12
   m_Name: AttackSpawnRight
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -99,7 +99,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4331367110312533200}
-  m_Layer: 9
+  m_Layer: 12
   m_Name: AttackSpawnRightUp
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -134,7 +134,7 @@ GameObject:
   - component: {fileID: 2801052017224567160}
   - component: {fileID: 2767599870235951857}
   - component: {fileID: -8359309423202111101}
-  m_Layer: 9
+  m_Layer: 12
   m_Name: Mech
   m_TagString: Mech
   m_Icon: {fileID: 0}
@@ -243,7 +243,7 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 1
+  m_Mass: 100
   m_LinearDrag: 0
   m_AngularDrag: 0
   m_GravityScale: 1
@@ -265,6 +265,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cameraScript: {fileID: -8359309423202111101}
+  player: {fileID: 1308314496819908, guid: a436815da4037b04a8a7c57083f3f039, type: 3}
   moveSpeed: 5
   jumpStrength: 10
   dashDuration: 0.25
@@ -280,14 +281,19 @@ MonoBehaviour:
   - {fileID: 2766019479929143154}
   - {fileID: 1718970448118449140}
   enemyCheck: {fileID: 2773622480365105346}
+  playerCheck: {fileID: 2460713252720814497}
   checkRadius: 0.1
   checkMookRadius: 0.5
+  checkPlayerRadius: 2
   whatIsGround:
     serializedVersion: 2
     m_Bits: 256
   whatIsMook:
     serializedVersion: 2
     m_Bits: 512
+  whatIsPlayer:
+    serializedVersion: 2
+    m_Bits: 2048
   attackSpawns:
   - {fileID: 1824814696855239232}
   - {fileID: 3756426279223954451}
@@ -330,7 +336,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2773119424260056058}
-  m_Layer: 9
+  m_Layer: 12
   m_Name: RightCheck1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -360,7 +366,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2766019479929143154}
-  m_Layer: 9
+  m_Layer: 12
   m_Name: LeftCheck1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -390,7 +396,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2773153926197938824}
-  m_Layer: 9
+  m_Layer: 12
   m_Name: GroundCheck
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -420,7 +426,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2773622480365105346}
-  m_Layer: 9
+  m_Layer: 12
   m_Name: EnemyCheck
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -450,7 +456,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5136095427025590975}
-  m_Layer: 9
+  m_Layer: 12
   m_Name: AttackSpawnCenter
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -471,6 +477,36 @@ Transform:
   m_Father: {fileID: 4747399421638846816}
   m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &3381067344790257793
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2460713252720814497}
+  m_Layer: 12
+  m_Name: PlayerCheck
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2460713252720814497
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3381067344790257793}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 6553132389728490553}
+  m_RootOrder: 6
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &3673406624259898812
 GameObject:
   m_ObjectHideFlags: 0
@@ -480,7 +516,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6553132389728490553}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: Checks
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -504,6 +540,7 @@ Transform:
   - {fileID: 2773622480365105346}
   - {fileID: 3215118068262654641}
   - {fileID: 1718970448118449140}
+  - {fileID: 2460713252720814497}
   m_Father: {fileID: 2766145400503073064}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -516,7 +553,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3215118068262654641}
-  m_Layer: 9
+  m_Layer: 12
   m_Name: RightCheck2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -546,7 +583,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2669782527659779194}
-  m_Layer: 9
+  m_Layer: 12
   m_Name: AttackSpawnLeftUp
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -576,7 +613,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1440327015631467292}
-  m_Layer: 9
+  m_Layer: 12
   m_Name: AttackSpawnLeftDown
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -606,7 +643,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1718970448118449140}
-  m_Layer: 9
+  m_Layer: 12
   m_Name: LeftCheck2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -636,7 +673,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3756426279223954451}
-  m_Layer: 9
+  m_Layer: 12
   m_Name: AttackSpawnRightDown
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -666,7 +703,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1115104585996879157}
-  m_Layer: 9
+  m_Layer: 12
   m_Name: AttackSpawnUp
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -696,7 +733,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4747399421638846816}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: AttackSpawns
   m_TagString: Untagged
   m_Icon: {fileID: 0}

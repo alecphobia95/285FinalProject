@@ -8,6 +8,7 @@ public class MechScript : MonoBehaviour
 
     //Remember to set this up on player script later
     public CameraMoveScript cameraScript;
+    public GameObject player;
 
     public float moveSpeed;
     public float jumpStrength;
@@ -20,10 +21,13 @@ public class MechScript : MonoBehaviour
     public Transform[] rightCheck;
     public Transform[] leftCheck;
     public Transform enemyCheck;
+    public Transform playerCheck;
     public float checkRadius;
     public float checkMookRadius;
+    public float checkPlayerRadius;
     public LayerMask whatIsGround;
     public LayerMask whatIsMook;
+    public LayerMask whatIsPlayer;
 
     public Transform[] attackSpawns;
     public GameObject[] attackPrefabs;
@@ -33,8 +37,7 @@ public class MechScript : MonoBehaviour
 
     public bool slippery;
     private bool control, dashing, canDash, piloting;
-    private bool onGround, onMook;
-    private bool rightWallPress, leftWallPress;
+    private bool onGround, onMook, rightWallPress, leftWallPress, canSwitch;
     private bool leftInput, rightInput, upInput, downInput, leftDashInput, rightDashInput,
         jumpInput, jumpHold, shootInput, switchWepInput, pilotInput;
     private int airJumps, direction;
@@ -46,6 +49,7 @@ public class MechScript : MonoBehaviour
     // Use this for initialization
     void Start()
     {
+        player = GameObject.FindGameObjectWithTag("Player");
         onGround = false;
         control = true;
         canDash = true;
@@ -71,12 +75,13 @@ public class MechScript : MonoBehaviour
 
     private void FixedUpdate()
     {
-        onGround = Physics2D.OverlapCircle(groundCheck.transform.position, checkRadius, whatIsGround);
-        onMook = Physics2D.OverlapCircle(enemyCheck.transform.position, checkMookRadius, whatIsMook);
+        onGround = (Physics2D.OverlapCircle(groundCheck.transform.position, checkRadius, whatIsGround) ||
+            Physics2D.OverlapCircle(groundCheck.transform.position, checkRadius, whatIsPlayer));
         rightWallPress = (Physics2D.OverlapCircle(rightCheck[0].transform.position, checkRadius, whatIsGround) ||
             Physics2D.OverlapCircle(rightCheck[1].transform.position, checkRadius, whatIsGround));
         leftWallPress = (Physics2D.OverlapCircle(leftCheck[0].transform.position, checkRadius, whatIsGround) ||
             Physics2D.OverlapCircle(leftCheck[1].transform.position, checkRadius, whatIsGround));
+        canSwitch = Physics2D.OverlapCircle(playerCheck.transform.position, checkPlayerRadius, whatIsPlayer);
     }
 
     // Update is called once per frame
@@ -614,14 +619,25 @@ public class MechScript : MonoBehaviour
         {
             if (piloting)
             {
+                Vector3 currentPosAdjust = this.transform.position;
+                currentPosAdjust.y += 1;
+                player.transform.position = currentPosAdjust;
+                player.SetActive(true);
                 piloting = false;
+                PlayerScript.instance.piloting = false;
+                rb.velocity = new Vector2(0, rb.velocity.y);
             }
             else if (!piloting)
             {
-                piloting = true;
+                if (canSwitch)
+                {
+                    piloting = true;
+                    PlayerScript.instance.piloting = true;
+                    player.SetActive(false);
+                }
             }
             SetCamMove();
+            PlayerScript.instance.SetCamMove();
         }
     }
-
 }

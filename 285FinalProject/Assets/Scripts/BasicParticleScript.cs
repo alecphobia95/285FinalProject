@@ -22,6 +22,20 @@ public class BasicParticleScript : MonoBehaviour
         {
             self.SetActive(false);
         }
+        if(collision.gameObject.tag == "Player")
+        {
+            if (self.tag == "MechBullet")
+            {
+                self.SetActive(false);
+            }
+        }
+        if (collision.gameObject.tag == "Mech")
+        {
+            if (self.tag == "BasicBullet")
+            {
+                self.SetActive(false);
+            }
+        }
     }
 
 }
