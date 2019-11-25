@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 61864742363996336}
   - component: {fileID: 50539552486287694}
   - component: {fileID: 9165352355772109897}
+  - component: {fileID: 1103363027049703553}
   m_Layer: 9
   m_Name: Player
   m_TagString: Player
@@ -143,6 +144,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1b5e83a7eb723c844bc69281e13d9be7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  cameraScript: {fileID: 1103363027049703553}
   moveSpeed: 5
   jumpStrength: 10
   dashDuration: 0.25
@@ -183,6 +185,20 @@ MonoBehaviour:
   - 0.1
   - 0.3
   slippery: 0
+--- !u!114 &1103363027049703553
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1308314496819908}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 576138d8554ec81418a3e385f62d4748, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  thisTransform: {fileID: 4373971459004702}
+  bounds: 0.1
 --- !u!1 &1431283142961092
 GameObject:
   m_ObjectHideFlags: 0

@@ -4,6 +4,10 @@ using UnityEngine;
 
 public class PlayerScript : MonoBehaviour
 {
+    public static PlayerScript instance;
+
+    public CameraMoveScript cameraScript;
+
     public float moveSpeed;
     public float jumpStrength;
     public float dashDuration;
@@ -27,11 +31,11 @@ public class PlayerScript : MonoBehaviour
     private int currentWep;
 
     public bool slippery;
-    private bool control, dashing, canDash;
+    private bool control, dashing, canDash, piloting;
     private bool onGround, onMook;
     private bool rightWallPress, leftWallPress;
     private bool leftInput, rightInput, upInput, downInput, leftDashInput, rightDashInput,
-        jumpInput, jumpHold, shootInput, switchWepInput;
+        jumpInput, jumpHold, shootInput, switchWepInput, pilotInput;
     private int airJumps, direction;
     private string horiAim, vertAim, aim;
 
@@ -41,6 +45,7 @@ public class PlayerScript : MonoBehaviour
         onGround = false;
         control = true;
         canDash = true;
+        piloting = false;
         direction = 1;
         horiAim = "right";
         vertAim = "";
@@ -48,6 +53,14 @@ public class PlayerScript : MonoBehaviour
         rb.gravityScale = gravity;
         SetUpArrays();
         ResetCooldowns();
+        if (instance == null)
+        {
+            instance = this;
+        }
+        else
+        {
+            Destroy(this);
+        }
     }
 
     private void FixedUpdate()
@@ -64,14 +77,18 @@ public class PlayerScript : MonoBehaviour
     void Update()
     {
         GrabInputs();
-        if (onGround)
+        if (!piloting)
         {
-            airJumps = maxJumps;
+            if (onGround)
+            {
+                airJumps = maxJumps;
+            }
+            SetPlayerAim();
+            CurrentWeaponSelect();
+            HandleShooting();
+            RegularMovment();
         }
-        SetPlayerAim();
-        CurrentWeaponSelect();
-        HandleShooting();
-        RegularMovment();
+        PilotSwitchCheck();
         ClearInputs();
     }
 
@@ -125,6 +142,10 @@ public class PlayerScript : MonoBehaviour
         {
             rightDashInput = true;
         }
+        if (Input.GetKeyDown(KeyCode.Backspace))
+        {
+            pilotInput = true;
+        }
     }
 
     void ClearInputs()
@@ -139,6 +160,7 @@ public class PlayerScript : MonoBehaviour
         switchWepInput = false;
         leftDashInput = false;
         rightDashInput = false;
+        pilotInput = false;
     }
 
     //This is just to be used for aiming ranged weapons for use in a future switch statement
@@ -444,21 +466,19 @@ public class PlayerScript : MonoBehaviour
                     direction = -1;
                 }
             }
-            if(!dashing && !leftInput && !rightInput && control && !slippery)
+            if(!dashing && ((!leftInput && !rightInput) || (!leftInput && !rightInput)) && control && !slippery)
             {
                 rb.velocity = new Vector2(0, rb.velocity.y);
             }
             if (leftInput && leftWallPress)
             {
                 rb.velocity = new Vector2(0, rb.velocity.y);
+                horiAim = "right";
             }
             if (rightInput && rightWallPress)
             {
                 rb.velocity = new Vector2(0, rb.velocity.y);
-            }
-            if(leftInput && rightInput)
-            {
-                rb.velocity = new Vector2(rb.velocity.x, rb.velocity.y);
+                horiAim = "left";
             }
 
             if (canDash)
@@ -546,6 +566,34 @@ public class PlayerScript : MonoBehaviour
         control = true;
         dashing = false;
         rb.gravityScale = gravity;
+    }
+
+    private void SetCamMove()
+    {
+        if (!piloting)
+        {
+            cameraScript.enabled = true;
+        }
+        else
+        {
+            cameraScript.enabled = false;
+        }
+    }
+
+    private void PilotSwitchCheck()
+    {
+        if (pilotInput)
+        {
+            if (piloting)
+            {
+                piloting = false;
+            }
+            else if (!piloting)
+            {
+                piloting = true;
+            }
+            SetCamMove();
+        }
     }
 
 }

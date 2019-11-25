@@ -9,6 +9,7 @@ TagManager:
   - MeleeSwipe
   - MechBullet
   - MechSwipe
+  - Mech
   layers:
   - Default
   - TransparentFX

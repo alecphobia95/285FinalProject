@@ -43,7 +43,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8358f2a71973c574e85b2c5515ce9b16, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player: {fileID: 1308314496819908, guid: a436815da4037b04a8a7c57083f3f039, type: 3}
+  player: {fileID: 0}
+  mech: {fileID: 0}
   pools:
   - tag: BasicBullet
     prefab: {fileID: 1721621707078912412, guid: 50a1ac6a3814f844e8c64a541d4e7eaa,
@@ -55,6 +56,10 @@ MonoBehaviour:
     size: 30
   - tag: MechSwipe
     prefab: {fileID: 6406930730894430844, guid: 2f2a44fd25504a8429fb0b29c8805917,
+      type: 3}
+    size: 1
+  - tag: MeleeSwipe
+    prefab: {fileID: 3132412400397367123, guid: bda6c340bee2efd4c9ac60bdf53c1637,
       type: 3}
     size: 1
   objectToSpawn: {fileID: 0}

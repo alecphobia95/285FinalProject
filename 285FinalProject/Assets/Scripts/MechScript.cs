@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class MechScript : MonoBehaviour
 {
+    public static MechScript instance;
+
     //Remember to set this up on player script later
     public CameraMoveScript cameraScript;
 
@@ -34,7 +36,7 @@ public class MechScript : MonoBehaviour
     private bool onGround, onMook;
     private bool rightWallPress, leftWallPress;
     private bool leftInput, rightInput, upInput, downInput, leftDashInput, rightDashInput,
-        jumpInput, jumpHold, shootInput, switchWepInput;
+        jumpInput, jumpHold, shootInput, switchWepInput, pilotInput;
     private int airJumps, direction;
     private string horiAim, vertAim, aim;
 
@@ -47,7 +49,7 @@ public class MechScript : MonoBehaviour
         onGround = false;
         control = true;
         canDash = true;
-        piloting = true;
+        piloting = false;
         direction = 1;
         fuelSupply = 100;
         horiAim = "right";
@@ -57,6 +59,14 @@ public class MechScript : MonoBehaviour
         SetUpArrays();
         ResetCooldowns();
         SetCamMove();
+        if (instance == null)
+        {
+            instance = this;
+        }
+        else
+        {
+            Destroy(this);
+        }
     }
 
     private void FixedUpdate()
@@ -72,9 +82,9 @@ public class MechScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        GrabInputs();
         if (piloting)
         {
-            GrabInputs();
             if (onGround)
             {
                 airJumps = maxJumps;
@@ -83,8 +93,9 @@ public class MechScript : MonoBehaviour
             CurrentWeaponSelect();
             HandleShooting();
             RegularMovment();
-            ClearInputs();
         }
+        PilotSwitchCheck();
+        ClearInputs();
     }
 
     void GrabInputs()
@@ -137,6 +148,10 @@ public class MechScript : MonoBehaviour
         {
             rightDashInput = true;
         }
+        if (Input.GetKeyDown(KeyCode.Backspace))
+        {
+            pilotInput = true;
+        }
     }
 
     void ClearInputs()
@@ -151,6 +166,7 @@ public class MechScript : MonoBehaviour
         switchWepInput = false;
         leftDashInput = false;
         rightDashInput = false;
+        pilotInput = false;
     }
 
     //This is just to be used for aiming ranged weapons for use in a future switch statement
@@ -193,7 +209,6 @@ public class MechScript : MonoBehaviour
             TempUIScript.instance.CurrentWep(currentWep);
         }
     }
-
 
     void HandleShooting()
     {
@@ -479,21 +494,19 @@ public class MechScript : MonoBehaviour
                     direction = -1;
                 }
             }
-            if (!dashing && !leftInput && !rightInput && control && !slippery)
+            if (!dashing && ((!leftInput && !rightInput) || (!leftInput && !rightInput)) && control && !slippery)
             {
                 rb.velocity = new Vector2(0, rb.velocity.y);
             }
             if (leftInput && leftWallPress)
             {
                 rb.velocity = new Vector2(0, rb.velocity.y);
+                horiAim = "right";
             }
             if (rightInput && rightWallPress)
             {
                 rb.velocity = new Vector2(0, rb.velocity.y);
-            }
-            if (leftInput && rightInput)
-            {
-                rb.velocity = new Vector2(rb.velocity.x, rb.velocity.y);
+                horiAim = "left";
             }
 
             if (canDash)
@@ -592,6 +605,22 @@ public class MechScript : MonoBehaviour
         else
         {
             cameraScript.enabled = false;
+        }
+    }
+
+    private void PilotSwitchCheck()
+    {
+        if (pilotInput)
+        {
+            if (piloting)
+            {
+                piloting = false;
+            }
+            else if (!piloting)
+            {
+                piloting = true;
+            }
+            SetCamMove();
         }
     }
 

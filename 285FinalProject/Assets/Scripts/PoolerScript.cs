@@ -7,6 +7,7 @@ public class PoolerScript : MonoBehaviour
     public static PoolerScript instance;
 
     public GameObject player;
+    public GameObject mech;
 
     public List<Pool> pools;
     public Dictionary<string, Queue<GameObject>> poolerDictionary = new Dictionary<string, Queue<GameObject>>();
@@ -33,6 +34,8 @@ public class PoolerScript : MonoBehaviour
         {
             Destroy(this);
         }
+        player = GameObject.FindGameObjectsWithTag("Player")[0];
+        mech = GameObject.FindGameObjectsWithTag("Mech")[0];
         foreach (Pool pool in pools)
         {
             Queue<GameObject> objectPool = new Queue<GameObject>();
@@ -40,10 +43,13 @@ public class PoolerScript : MonoBehaviour
             for (int x = 0; x < pool.size; x++)
             {
                 GameObject obj = Instantiate(pool.prefab);
-                if (obj.name.Contains("Melee"))
+                if (obj.tag == "MeleeSwipe")
                 {
-                    player = GameObject.FindGameObjectsWithTag("Player")[0];
                     obj.transform.parent = player.transform;
+                }
+                if (obj.tag == "MechSwipe")
+                {
+                    obj.transform.parent = mech.transform;
                 }
                 obj.SetActive(false);
                 objectPool.Enqueue(obj);
