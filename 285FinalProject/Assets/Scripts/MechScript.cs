@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerScript : MonoBehaviour
+public class MechScript : MonoBehaviour
 {
-    public static PlayerScript instance;
+    public static MechScript instance;
 
+    //Remember to set this up on player script later
     public CameraMoveScript cameraScript;
+    public GameObject player;
 
     public float moveSpeed;
     public float jumpStrength;
@@ -19,11 +21,13 @@ public class PlayerScript : MonoBehaviour
     public Transform[] rightCheck;
     public Transform[] leftCheck;
     public Transform enemyCheck;
+    public Transform playerCheck;
     public float checkRadius;
     public float checkMookRadius;
+    public float checkPlayerRadius;
     public LayerMask whatIsGround;
     public LayerMask whatIsMook;
-    public LayerMask whatIsMech;
+    public LayerMask whatIsPlayer;
 
     public Transform[] attackSpawns;
     public GameObject[] attackPrefabs;
@@ -32,28 +36,33 @@ public class PlayerScript : MonoBehaviour
     private int currentWep;
 
     public bool slippery;
-    private bool control, dashing, canDash;
-    public bool piloting;
-    private bool onGround, onMook, rightWallPress, leftWallPress;
+    private bool control, dashing, canDash, piloting;
+    private bool onGround, onMook, rightWallPress, leftWallPress, canSwitch;
     private bool leftInput, rightInput, upInput, downInput, leftDashInput, rightDashInput,
-        jumpInput, jumpHold, shootInput, switchWepInput;
+        jumpInput, jumpHold, shootInput, switchWepInput, pilotInput;
     private int airJumps, direction;
     private string horiAim, vertAim, aim;
+
+    public float drainRate, refuelRate;
+    private float fuelSupply;
 
     // Use this for initialization
     void Start()
     {
+        player = GameObject.FindGameObjectWithTag("Player");
         onGround = false;
         control = true;
         canDash = true;
         piloting = false;
         direction = 1;
+        fuelSupply = 100;
         horiAim = "right";
         vertAim = "";
         currentWep = 0;
         rb.gravityScale = gravity;
         SetUpArrays();
         ResetCooldowns();
+        SetCamMove();
         if (instance == null)
         {
             instance = this;
@@ -67,24 +76,20 @@ public class PlayerScript : MonoBehaviour
     private void FixedUpdate()
     {
         onGround = (Physics2D.OverlapCircle(groundCheck.transform.position, checkRadius, whatIsGround) ||
-            Physics2D.OverlapCircle(groundCheck.transform.position, checkRadius, whatIsMech));
-        onMook = Physics2D.OverlapCircle(enemyCheck.transform.position, checkMookRadius, whatIsMook);
+            Physics2D.OverlapCircle(groundCheck.transform.position, checkRadius, whatIsPlayer));
         rightWallPress = (Physics2D.OverlapCircle(rightCheck[0].transform.position, checkRadius, whatIsGround) ||
-            Physics2D.OverlapCircle(rightCheck[1].transform.position, checkRadius, whatIsGround)) ||
-            (Physics2D.OverlapCircle(rightCheck[0].transform.position, checkRadius, whatIsMech) ||
-            Physics2D.OverlapCircle(rightCheck[1].transform.position, checkRadius, whatIsMech));
+            Physics2D.OverlapCircle(rightCheck[1].transform.position, checkRadius, whatIsGround));
         leftWallPress = (Physics2D.OverlapCircle(leftCheck[0].transform.position, checkRadius, whatIsGround) ||
-            Physics2D.OverlapCircle(leftCheck[1].transform.position, checkRadius, whatIsGround)) ||
-            (Physics2D.OverlapCircle(leftCheck[0].transform.position, checkRadius, whatIsMech) ||
-            Physics2D.OverlapCircle(leftCheck[1].transform.position, checkRadius, whatIsMech));
+            Physics2D.OverlapCircle(leftCheck[1].transform.position, checkRadius, whatIsGround));
+        canSwitch = Physics2D.OverlapCircle(playerCheck.transform.position, checkPlayerRadius, whatIsPlayer);
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (!piloting)
+        GrabInputs();
+        if (piloting)
         {
-            GrabInputs();
             if (onGround)
             {
                 airJumps = maxJumps;
@@ -93,8 +98,9 @@ public class PlayerScript : MonoBehaviour
             CurrentWeaponSelect();
             HandleShooting();
             RegularMovment();
-            ClearInputs();
         }
+        PilotSwitchCheck();
+        ClearInputs();
     }
 
     void GrabInputs()
@@ -129,7 +135,7 @@ public class PlayerScript : MonoBehaviour
             jumpInput = true;
         }
 
-        if (Input.GetKeyDown(KeyCode.Return))
+        if (Input.GetKey(KeyCode.Return))
         {
             shootInput = true;
             //Debug.Log("Enter has been pressed");
@@ -147,6 +153,10 @@ public class PlayerScript : MonoBehaviour
         {
             rightDashInput = true;
         }
+        if (Input.GetKeyDown(KeyCode.Backspace))
+        {
+            pilotInput = true;
+        }
     }
 
     void ClearInputs()
@@ -161,6 +171,7 @@ public class PlayerScript : MonoBehaviour
         switchWepInput = false;
         leftDashInput = false;
         rightDashInput = false;
+        pilotInput = false;
     }
 
     //This is just to be used for aiming ranged weapons for use in a future switch statement
@@ -180,7 +191,7 @@ public class PlayerScript : MonoBehaviour
             vertAim = "";
         }
 
-        if(vertAim != "" && (!leftInput && !rightInput))
+        if (vertAim != "" && (!leftInput && !rightInput))
         {
             aim = vertAim;
         }
@@ -206,9 +217,14 @@ public class PlayerScript : MonoBehaviour
 
     void HandleShooting()
     {
-        if (canShoot[currentWep])
+        if (shootInput)
         {
-            if (shootInput)
+            fuelSupply -= drainRate * Time.deltaTime;
+            if(fuelSupply < (-drainRate * Time.deltaTime) * 4)
+            {
+                fuelSupply = refuelRate * Time.deltaTime;
+            }
+            if (canShoot[currentWep] && fuelSupply > 0)
             {
                 GameObject attack;
                 //Debug.Log(aim);
@@ -232,6 +248,7 @@ public class PlayerScript : MonoBehaviour
                         if (attack.name.Contains("Melee"))
                         {
                             MeleeAttackScript script = attack.GetComponent<MeleeAttackScript>();
+                            script.CancelInvoke("HideMe");
                             script.HideMe();
                         }
                         break;
@@ -249,6 +266,7 @@ public class PlayerScript : MonoBehaviour
                         if (attack.name.Contains("Melee"))
                         {
                             MeleeAttackScript script = attack.GetComponent<MeleeAttackScript>();
+                            script.CancelInvoke("HideMe");
                             script.HideMe();
                         }
                         break;
@@ -266,6 +284,7 @@ public class PlayerScript : MonoBehaviour
                         if (attack.name.Contains("Melee"))
                         {
                             MeleeAttackScript script = attack.GetComponent<MeleeAttackScript>();
+                            script.CancelInvoke("HideMe");
                             script.HideMe();
                         }
                         break;
@@ -283,6 +302,7 @@ public class PlayerScript : MonoBehaviour
                         if (attack.name.Contains("Melee"))
                         {
                             MeleeAttackScript script = attack.GetComponent<MeleeAttackScript>();
+                            script.CancelInvoke("HideMe");
                             script.HideMe();
                         }
                         break;
@@ -300,6 +320,7 @@ public class PlayerScript : MonoBehaviour
                         if (attack.name.Contains("Melee"))
                         {
                             MeleeAttackScript script = attack.GetComponent<MeleeAttackScript>();
+                            script.CancelInvoke("HideMe");
                             script.HideMe();
                         }
                         break;
@@ -317,6 +338,7 @@ public class PlayerScript : MonoBehaviour
                         if (attack.name.Contains("Melee"))
                         {
                             MeleeAttackScript script = attack.GetComponent<MeleeAttackScript>();
+                            script.CancelInvoke("HideMe");
                             script.HideMe();
                         }
                         break;
@@ -334,6 +356,7 @@ public class PlayerScript : MonoBehaviour
                         if (attack.name.Contains("Melee"))
                         {
                             MeleeAttackScript script = attack.GetComponent<MeleeAttackScript>();
+                            script.CancelInvoke("HideMe");
                             script.HideMe();
                         }
                         break;
@@ -351,6 +374,7 @@ public class PlayerScript : MonoBehaviour
                         if (attack.name.Contains("Melee"))
                         {
                             MeleeAttackScript script = attack.GetComponent<MeleeAttackScript>();
+                            script.CancelInvoke("HideMe");
                             script.HideMe();
                         }
                         break;
@@ -368,6 +392,7 @@ public class PlayerScript : MonoBehaviour
                         if (attack.name.Contains("Melee"))
                         {
                             MeleeAttackScript script = attack.GetComponent<MeleeAttackScript>();
+                            script.CancelInvoke("HideMe");
                             script.HideMe();
                         }
                         break;
@@ -377,6 +402,15 @@ public class PlayerScript : MonoBehaviour
                 StartCoroutine(ReadyToShoot(currentWep));
             }
         }
+        else {
+            fuelSupply += refuelRate * Time.deltaTime;
+            if(fuelSupply > 100)
+            {
+                fuelSupply = 100;
+            }
+        }
+        FuelMeterScript.instance.fuelStatus = fuelSupply;
+        //Debug.Log(fuelSupply);
     }
 
     IEnumerator ReadyToShoot(int whichOne)
@@ -397,7 +431,7 @@ public class PlayerScript : MonoBehaviour
 
     void ResetCooldowns()
     {
-        for(int x = 0; x < canShoot.Length; x++)
+        for (int x = 0; x < canShoot.Length; x++)
         {
             canShoot[x] = true;
         }
@@ -465,7 +499,7 @@ public class PlayerScript : MonoBehaviour
                     direction = -1;
                 }
             }
-            if(!dashing && ((!leftInput && !rightInput) || (!leftInput && !rightInput)) && control && !slippery)
+            if (!dashing && ((!leftInput && !rightInput) || (!leftInput && !rightInput)) && control && !slippery)
             {
                 rb.velocity = new Vector2(0, rb.velocity.y);
             }
@@ -500,7 +534,7 @@ public class PlayerScript : MonoBehaviour
                     }
 
                     rb.gravityScale = 0f;
-                    
+
                     Invoke("ReturnControl", dashDuration);
                     Invoke("StopDash", dashDuration);
                     Invoke("EnableDash", dashDuration * 1.5f);
@@ -510,7 +544,7 @@ public class PlayerScript : MonoBehaviour
 
         if (dashing)
         {
-            if(leftWallPress || rightWallPress)
+            if (leftWallPress || rightWallPress)
             {
                 StopDash();
             }
@@ -539,7 +573,7 @@ public class PlayerScript : MonoBehaviour
     {
         rb.velocity = new Vector2((moveSpeed * direction), jumpStrength);
         control = false;
-        if(horiAim == "right")
+        if (horiAim == "right")
         {
             horiAim = "left";
         }
@@ -568,9 +602,9 @@ public class PlayerScript : MonoBehaviour
         rb.gravityScale = gravity;
     }
 
-    public void SetCamMove()
+    private void SetCamMove()
     {
-        if (!piloting)
+        if (piloting)
         {
             cameraScript.enabled = true;
         }
@@ -580,4 +614,31 @@ public class PlayerScript : MonoBehaviour
         }
     }
 
+    private void PilotSwitchCheck()
+    {
+        if (pilotInput)
+        {
+            if (piloting)
+            {
+                Vector3 currentPosAdjust = this.transform.position;
+                currentPosAdjust.y += 1;
+                player.transform.position = currentPosAdjust;
+                player.SetActive(true);
+                piloting = false;
+                PlayerScript.instance.piloting = false;
+                rb.velocity = new Vector2(0, rb.velocity.y);
+            }
+            else if (!piloting)
+            {
+                if (canSwitch)
+                {
+                    piloting = true;
+                    PlayerScript.instance.piloting = true;
+                    player.SetActive(false);
+                }
+            }
+            SetCamMove();
+            PlayerScript.instance.SetCamMove();
+        }
+    }
 }

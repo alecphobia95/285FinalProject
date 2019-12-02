@@ -5,6 +5,11 @@ TagManager:
   serializedVersion: 2
   tags:
   - Wall
+  - BasicBullet
+  - MeleeSwipe
+  - MechBullet
+  - MechSwipe
+  - Mech
   layers:
   - Default
   - TransparentFX
@@ -16,9 +21,9 @@ TagManager:
   - 
   - Wall
   - Mook
-  - 
-  - 
-  - 
+  - Attack
+  - Player
+  - Mech
   - 
   - 
   - 
