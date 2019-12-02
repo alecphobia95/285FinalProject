@@ -581,6 +581,7 @@ public class MechScript : MonoBehaviour
         {
             horiAim = "right";
         }
+        CancelInvoke("ReturnControl");
         Invoke("ReturnControl", 0.5f);
     }
 

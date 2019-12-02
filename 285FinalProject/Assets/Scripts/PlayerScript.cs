@@ -70,9 +70,13 @@ public class PlayerScript : MonoBehaviour
             Physics2D.OverlapCircle(groundCheck.transform.position, checkRadius, whatIsMech));
         onMook = Physics2D.OverlapCircle(enemyCheck.transform.position, checkMookRadius, whatIsMook);
         rightWallPress = (Physics2D.OverlapCircle(rightCheck[0].transform.position, checkRadius, whatIsGround) ||
-            Physics2D.OverlapCircle(rightCheck[1].transform.position, checkRadius, whatIsGround));
+            Physics2D.OverlapCircle(rightCheck[1].transform.position, checkRadius, whatIsGround)) ||
+            (Physics2D.OverlapCircle(rightCheck[0].transform.position, checkRadius, whatIsMech) ||
+            Physics2D.OverlapCircle(rightCheck[1].transform.position, checkRadius, whatIsMech));
         leftWallPress = (Physics2D.OverlapCircle(leftCheck[0].transform.position, checkRadius, whatIsGround) ||
-            Physics2D.OverlapCircle(leftCheck[1].transform.position, checkRadius, whatIsGround));
+            Physics2D.OverlapCircle(leftCheck[1].transform.position, checkRadius, whatIsGround)) ||
+            (Physics2D.OverlapCircle(leftCheck[0].transform.position, checkRadius, whatIsMech) ||
+            Physics2D.OverlapCircle(leftCheck[1].transform.position, checkRadius, whatIsMech));
     }
 
     // Update is called once per frame
@@ -543,6 +547,7 @@ public class PlayerScript : MonoBehaviour
         {
             horiAim = "right";
         }
+        CancelInvoke("ReturnControl");
         Invoke("ReturnControl", 0.5f);
     }
 
