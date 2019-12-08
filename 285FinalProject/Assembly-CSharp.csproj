@@ -73,6 +73,7 @@
     <Compile Include="Assets\Scripts\PlayerScript.cs" />
     <Compile Include="Assets\Scripts\PoolerScript.cs" />
     <Compile Include="Assets\Scripts\TempUIScript.cs" />
+    <Compile Include="Assets\Scripts\UIScript.cs" />
     <None Include="Assets\Background\FreeParallax\Readme.txt" />
     <Reference Include="Unity.Timeline.Editor">
       <HintPath>C:/Users/aebla/Desktop/SGD-285_Software Engineering/GitHub/285FinalProject/285FinalProject/Library/ScriptAssemblies/Unity.Timeline.Editor.dll</HintPath>
