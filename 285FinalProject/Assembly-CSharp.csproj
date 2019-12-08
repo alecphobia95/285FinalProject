@@ -62,8 +62,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Background\FreeParallax\Scripts\FreeParallax.cs" />
-    <Compile Include="Assets\Background\FreeParallax\Scripts\FreeParallaxDemo.cs" />
+    <Compile Include="Assets\Background\SpaceBG\FreeParallax\Scripts\FreeParallax.cs" />
+    <Compile Include="Assets\Background\SpaceBG\FreeParallax\Scripts\FreeParallaxDemo.cs" />
     <Compile Include="Assets\Scripts\BasicParticleScript.cs" />
     <Compile Include="Assets\Scripts\bgParallaxScript.cs" />
     <Compile Include="Assets\Scripts\CameraMoveScript.cs" />
@@ -74,7 +74,7 @@
     <Compile Include="Assets\Scripts\PoolerScript.cs" />
     <Compile Include="Assets\Scripts\TempUIScript.cs" />
     <Compile Include="Assets\Scripts\UIScript.cs" />
-    <None Include="Assets\Background\FreeParallax\Readme.txt" />
+    <None Include="Assets\Background\SpaceBG\FreeParallax\Readme.txt" />
     <Reference Include="Unity.Timeline.Editor">
       <HintPath>C:/Users/aebla/Desktop/SGD-285_Software Engineering/GitHub/285FinalProject/285FinalProject/Library/ScriptAssemblies/Unity.Timeline.Editor.dll</HintPath>
     </Reference>
