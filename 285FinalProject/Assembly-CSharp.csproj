@@ -62,13 +62,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Main menu with parallax FREE\Scripts\ActivateParallax.cs" />
-    <Compile Include="Assets\Main menu with parallax FREE\Scripts\Arrow.cs" />
-    <Compile Include="Assets\Main menu with parallax FREE\Scripts\MenuController.cs" />
-    <Compile Include="Assets\Main menu with parallax FREE\Scripts\Parallax.cs" />
-    <Compile Include="Assets\Main menu with parallax FREE\Scripts\SceneController.cs" />
-    <Compile Include="Assets\Main menu with parallax FREE\Scripts\Settings.cs" />
-    <Compile Include="Assets\Main menu with parallax FREE\Scripts\SettingsController.cs" />
+    <Compile Include="Assets\Background\FreeParallax\Scripts\FreeParallax.cs" />
+    <Compile Include="Assets\Background\FreeParallax\Scripts\FreeParallaxDemo.cs" />
     <Compile Include="Assets\Scripts\BasicParticleScript.cs" />
     <Compile Include="Assets\Scripts\bgParallaxScript.cs" />
     <Compile Include="Assets\Scripts\CameraMoveScript.cs" />
@@ -78,6 +73,7 @@
     <Compile Include="Assets\Scripts\PlayerScript.cs" />
     <Compile Include="Assets\Scripts\PoolerScript.cs" />
     <Compile Include="Assets\Scripts\TempUIScript.cs" />
+    <None Include="Assets\Background\FreeParallax\Readme.txt" />
     <Reference Include="Unity.Timeline.Editor">
       <HintPath>C:/Users/aebla/Desktop/SGD-285_Software Engineering/GitHub/285FinalProject/285FinalProject/Library/ScriptAssemblies/Unity.Timeline.Editor.dll</HintPath>
     </Reference>
