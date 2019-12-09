@@ -5,7 +5,7 @@ using UnityEngine;
 public class PlayerScript : MonoBehaviour
 {
     //ANIMATION
-    Animator animController;
+    public Animator animController;
     public GameObject player;
     [HideInInspector] public bool facingRight = true;
 
@@ -90,6 +90,7 @@ public class PlayerScript : MonoBehaviour
         if (!piloting)
         {
             GrabInputs();
+            AnimationUpdates();
             if (onGround)
             {
                 airJumps = maxJumps;
@@ -98,69 +99,72 @@ public class PlayerScript : MonoBehaviour
             CurrentWeaponSelect();
             HandleShooting();
             RegularMovment();
+            SetSpriteDirection();
             ClearInputs();
         }
 
-        AnimationUpdates();
+        
     }
     /// <summary>
     void AnimationUpdates()
     {
-        animController = GetComponent<Animator>();
         ///To the Right
-        if (Input.GetKeyDown(KeyCode.D) || Input.GetKeyDown(KeyCode.RightArrow))
+        if ((rightInput || leftInput) && onGround)
         {
             animController.SetBool("isGoingRight", true);
             //animController.SetBool("isIdling", false);
             Debug.Log("To The Right");
         }
 
-        if (Input.GetKeyUp(KeyCode.D) || Input.GetKeyUp(KeyCode.RightArrow))
+        else
         {
             animController.SetBool("isGoingRight", false);
             //animController.SetBool("isIdling", false);
             Debug.Log("Right Stop");
         }
-
-        ///To the Left
-        if (Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.LeftArrow))
-        {
-            animController.SetBool("isGoingRight", true);
-            //animController.SetBool("isIdling", false);
-            Debug.Log("To The Left");
-        }
-
-        if (Input.GetKeyUp(KeyCode.S) || Input.GetKeyUp(KeyCode.LeftArrow))
-        {
-            animController.SetBool("isGoingRight", false);
-            //animController.SetBool("isIdling", false);
-            Debug.Log("Right Stop");
-        }
-
 
         //Jump On It
-        if (Input.GetKeyUp(KeyCode.Space))
-        {
-            animController.SetBool("isJumping", false);
-
-        }
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (jumpHold && !onGround)
         {
             animController.SetBool("isJumping", true);
         }
 
-        ///Put 'Em Up
-        if (Input.GetKeyDown(KeyCode.Return))
+        else
         {
-            animController.SetBool("isShooting", true);
-            Debug.Log("Enter has been pressed");
+            animController.SetBool("isJumping", false);
+
         }
 
-        if (Input.GetKeyUp(KeyCode.Return))
+        if ((rightInput && rightWallPress && !onGround) || (leftInput && leftWallPress && !onGround))
         {
-            animController.SetBool("isShooting", false);
-            Debug.Log("Enter has been released");
+            //put wall cling on here
+            animController.SetBool("isClinging", true);
+            Debug.Log("Hang in There!");
+            if (jumpHold)
+            {
+                animController.SetBool("isJumping", false);
+            }
         }
+
+        else
+        {
+            //put wall cling off here
+            animController.SetBool("isClinging", false);
+            Debug.Log("Or Die. Who cares.");
+        }
+
+        /////Put 'Em Up
+        //if (shootInput)
+        //{
+        //    animController.SetBool("isShooting", true);
+        //    Debug.Log("Enter has been pressed");
+        //}
+
+        //if (!shootInput)
+        //{
+        //    animController.SetBool("isShooting", false);
+        //    Debug.Log("Enter has been released");
+        //}
 
     }
     /// </summary>
@@ -522,12 +526,7 @@ public class PlayerScript : MonoBehaviour
                 }
 
                 ///
-                if (facingRight)
-                {
-                    facingRight = false;
-                    player.transform.localScale = new Vector3(-player.transform.localScale.x, player.transform.localScale.y, player.transform.localScale.z);
-                    Debug.Log("Flip it real good");
-                }
+                
                 ///
             }
             if (rightInput && !rightWallPress)
@@ -542,12 +541,7 @@ public class PlayerScript : MonoBehaviour
                 }
 
                 ///
-                if (!facingRight)
-                {
-                    facingRight = true;
-                    player.transform.localScale = new Vector3(-player.transform.localScale.x, player.transform.localScale.y, player.transform.localScale.z);
-                    Debug.Log("Flip it real good");
-                }
+
                 ///
             }
             if(!dashing && ((!leftInput && !rightInput) || (!leftInput && !rightInput)) && control && !slippery)
@@ -612,6 +606,29 @@ public class PlayerScript : MonoBehaviour
             {
                 rb.gravityScale = gravity;
             }
+        }
+    }
+
+    void SetSpriteDirection()
+    {
+        Vector3 whichFlip = player.transform.localScale;
+        if (horiAim == "right")
+        {
+            if(whichFlip.x < 0)
+            {
+                whichFlip.x = -whichFlip.x;
+                player.transform.localScale = whichFlip;
+            }
+            Debug.Log("Flip it real good");
+        }
+        if (horiAim == "left")
+        {
+            if (whichFlip.x > 0)
+            {
+                whichFlip.x = -whichFlip.x;
+                player.transform.localScale = whichFlip;
+            }
+            Debug.Log("Flip it real good");
         }
     }
 
