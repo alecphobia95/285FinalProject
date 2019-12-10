@@ -371,6 +371,7 @@ public class PlayerScript : MonoBehaviour
                         if (attack.name.Contains("Melee"))
                         {
                             MeleeAttackScript script = attack.GetComponent<MeleeAttackScript>();
+                            script.CancelInvoke("HideMe");
                             script.HideMe();
                         }
                         break;
@@ -680,6 +681,11 @@ public class PlayerScript : MonoBehaviour
         {
             cameraScript.enabled = false;
         }
+    }
+
+    public void Death()
+    {
+
     }
 
 }

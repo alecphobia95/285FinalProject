@@ -641,4 +641,9 @@ public class MechScript : MonoBehaviour
             PlayerScript.instance.SetCamMove();
         }
     }
+
+    public void Death()
+    {
+
+    }
 }
