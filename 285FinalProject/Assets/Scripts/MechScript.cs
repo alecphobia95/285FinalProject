@@ -102,9 +102,9 @@ public class MechScript : MonoBehaviour
             CurrentWeaponSelect();
             HandleShooting();
             RegularMovment();
-            SetSpriteDirection();
         }
         PilotSwitchCheck();
+        SetSpriteDirection();
         ClearInputs();
     }
 
@@ -633,13 +633,13 @@ public class MechScript : MonoBehaviour
 
     void SetSpriteDirection()
     {
-        Vector3 whichFlip = player.transform.localScale;
+        Vector3 whichFlip = mech.transform.localScale;
         if (horiAim == "right")
         {
             if (whichFlip.x < 0)
             {
                 whichFlip.x = -whichFlip.x;
-                player.transform.localScale = whichFlip;
+                mech.transform.localScale = whichFlip;
             }
             Debug.Log("Flip it real good");
         }
@@ -648,7 +648,7 @@ public class MechScript : MonoBehaviour
             if (whichFlip.x > 0)
             {
                 whichFlip.x = -whichFlip.x;
-                player.transform.localScale = whichFlip;
+                mech.transform.localScale = whichFlip;
             }
             Debug.Log("Flip it real good");
         }
