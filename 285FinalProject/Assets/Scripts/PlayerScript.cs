@@ -7,7 +7,6 @@ public class PlayerScript : MonoBehaviour
     //ANIMATION
     public Animator animController;
     public GameObject player;
-    [HideInInspector] public bool facingRight = true;
 
     public static PlayerScript instance;
 
@@ -113,14 +112,14 @@ public class PlayerScript : MonoBehaviour
         {
             animController.SetBool("isGoingRight", true);
             //animController.SetBool("isIdling", false);
-            Debug.Log("To The Right");
+            //Debug.Log("To The Right");
         }
 
         else
         {
             animController.SetBool("isGoingRight", false);
             //animController.SetBool("isIdling", false);
-            Debug.Log("Right Stop");
+            //Debug.Log("Right Stop");
         }
 
         //Jump On It
@@ -139,7 +138,7 @@ public class PlayerScript : MonoBehaviour
         {
             //put wall cling on here
             animController.SetBool("isClinging", true);
-            Debug.Log("Hang in There!");
+            //Debug.Log("Hang in There!");
             if (jumpHold)
             {
                 animController.SetBool("isJumping", false);
@@ -150,7 +149,7 @@ public class PlayerScript : MonoBehaviour
         {
             //put wall cling off here
             animController.SetBool("isClinging", false);
-            Debug.Log("Or Die. Who cares.");
+            //Debug.Log("Or Die. Who cares.");
         }
 
         /////Put 'Em Up

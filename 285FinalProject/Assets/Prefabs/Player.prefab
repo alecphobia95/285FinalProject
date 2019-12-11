@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 9165352355772109897}
   - component: {fileID: 1103363027049703553}
   - component: {fileID: 348277545}
+  - component: {fileID: -941826863646846733}
   m_Layer: 11
   m_Name: Player
   m_TagString: Player
@@ -148,7 +149,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   animController: {fileID: 842586092102480673}
   player: {fileID: 4175853528227662863}
-  facingRight: 1
   cameraScript: {fileID: 1103363027049703553}
   moveSpeed: 5
   jumpStrength: 10
@@ -227,6 +227,20 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &-941826863646846733
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1308314496819908}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: febf5acde1f4c8f4a9c6e99d3aa4995e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  health: 100
+  me: {fileID: 1308314496819908}
 --- !u!1 &1431283142961092
 GameObject:
   m_ObjectHideFlags: 0
