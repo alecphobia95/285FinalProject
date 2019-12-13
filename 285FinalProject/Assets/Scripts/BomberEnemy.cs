@@ -40,4 +40,9 @@ public class BomberEnemy : MonoBehaviour
             bombPoint = overlapCollider.gameObject.transform.position;
         }
     }
+    
+    public void Death()
+    {
+        Destroy(gameObject);
+    }
 }

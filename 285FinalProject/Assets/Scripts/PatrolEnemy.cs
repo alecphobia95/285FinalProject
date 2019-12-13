@@ -31,4 +31,9 @@ public class PatrolEnemy : MonoBehaviour
             _nextPoint = tempPoint;
         }
     }
+
+    public void Death()
+    {
+        Destroy(gameObject);
+    }
 }

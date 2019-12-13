@@ -28,4 +28,9 @@ public class FlyingEnemy : MonoBehaviour
             targetPoint = originPoint + Random.insideUnitCircle * roamRadius;
         }
     }
+    
+    public void Death()
+    {
+        Destroy(gameObject);
+    }
 }

@@ -22,8 +22,19 @@ public class BasicParticleScript : MonoBehaviour
         {
             self.SetActive(false);
         }
+        if(collision.gameObject.layer == 13)
+        {
+            collision.gameObject.GetComponent<HealthAndDamageScript>().TakeDamage(10, 0);
+            self.SetActive(false);
+        }
         if(collision.gameObject.tag == "Player")
         {
+            if (self.CompareTag("EnemyBullet"))
+            {
+                collision.gameObject.GetComponent<HealthAndDamageScript>().TakeDamage(5, 0);
+                self.SetActive(false);
+            }
+            
             if (self.tag == "MechBullet")
             {
                 self.SetActive(false);

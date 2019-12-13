@@ -10,6 +10,11 @@ TagManager:
   - MechBullet
   - MechSwipe
   - Mech
+  - Patroller
+  - Flyer
+  - Bomber
+  - Boss
+  - EnemyBullet
   layers:
   - Default
   - TransparentFX
@@ -24,7 +29,7 @@ TagManager:
   - Attack
   - Player
   - Mech
-  - 
+  - Enemy
   - 
   - 
   - 

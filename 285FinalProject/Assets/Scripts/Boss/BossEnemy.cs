@@ -155,4 +155,9 @@ public class BossEnemy : MonoBehaviour
                 break;
         }
     }
+    
+    public void Death()
+    {
+        Destroy(gameObject);
+    }
 }
