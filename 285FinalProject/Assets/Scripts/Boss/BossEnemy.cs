@@ -26,7 +26,7 @@ public class BossEnemy : MonoBehaviour
     private Coroutine _currentBehavior;
     
     private Vector2 _dashTimeRange = new Vector2(7, 15);
-    private float _dashTime;
+    private float _dashTime = -1;
     
     // Start is called before the first frame update
     void Start()
@@ -38,8 +38,6 @@ public class BossEnemy : MonoBehaviour
         _stateBehaviors[BossState.PATROL] = PatrolBehaviorEnumerator();
         _stateBehaviors[BossState.IDLE] = IdleBehavior();
         _stateBehaviors[BossState.DASH] = DashBehavior();
-
-        _dashTime = Time.time + Random.Range(_dashTimeRange.x, _dashTimeRange.y);
     }
 
     // Update is called once per frame
@@ -52,7 +50,7 @@ public class BossEnemy : MonoBehaviour
 //        if (Input.GetKeyDown(KeyCode.V))
 //            StateSwitcher(BossState.DASH);
 
-        if (Time.time >= _dashTime && _state != BossState.DASH)
+        if (Time.time >= _dashTime && _state != BossState.DASH && _dashTime != -1)
         {
             StateSwitcher(BossState.DASH);
         }
@@ -63,10 +61,11 @@ public class BossEnemy : MonoBehaviour
     {
         if (_state != BossState.IDLE)
             return;
-        Collider2D overlapCollider = Physics2D.OverlapBox(transform.position, new Vector2(20, 20), 0, LayerMask.GetMask("Player"));
+        Collider2D overlapCollider = Physics2D.OverlapBox(transform.position, new Vector2(20, 10), 0, LayerMask.GetMask("Player"));
         
         if (overlapCollider != null)
         {
+            _dashTime = Time.time + Random.Range(_dashTimeRange.x, _dashTimeRange.y);
             StateSwitcher(BossState.PATROL);
         }
     }
