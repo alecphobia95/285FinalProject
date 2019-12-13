@@ -62,14 +62,20 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Background\SpaceBG\FreeParallax\Scripts\FreeParallax.cs" />
+    <Compile Include="Assets\Background\SpaceBG\FreeParallax\Scripts\FreeParallaxDemo.cs" />
     <Compile Include="Assets\Scripts\BasicParticleScript.cs" />
+    <Compile Include="Assets\Scripts\bgParallaxScript.cs" />
     <Compile Include="Assets\Scripts\CameraMoveScript.cs" />
     <Compile Include="Assets\Scripts\FuelMeterScript.cs" />
+    <Compile Include="Assets\Scripts\HealthAndDamageScript.cs" />
     <Compile Include="Assets\Scripts\MechScript.cs" />
     <Compile Include="Assets\Scripts\MeleeAttackScript.cs" />
     <Compile Include="Assets\Scripts\PlayerScript.cs" />
     <Compile Include="Assets\Scripts\PoolerScript.cs" />
     <Compile Include="Assets\Scripts\TempUIScript.cs" />
+    <Compile Include="Assets\Scripts\UIScript.cs" />
+    <None Include="Assets\Background\SpaceBG\FreeParallax\Readme.txt" />
     <Reference Include="Unity.Timeline.Editor">
       <HintPath>D:/AlecMartinez/Wake Tech Sem 4/SGD 285/Assignment04/285FinalProject/285FinalProject/Library/ScriptAssemblies/Unity.Timeline.Editor.dll</HintPath>
     </Reference>

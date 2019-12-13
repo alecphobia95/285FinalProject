@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class MechScript : MonoBehaviour
 {
+    public Animator animController;
+    public GameObject mech;
+
     public static MechScript instance;
 
     //Remember to set this up on player script later
@@ -90,6 +93,7 @@ public class MechScript : MonoBehaviour
         GrabInputs();
         if (piloting)
         {
+            AnimationUpdates();
             if (onGround)
             {
                 airJumps = maxJumps;
@@ -100,7 +104,70 @@ public class MechScript : MonoBehaviour
             RegularMovment();
         }
         PilotSwitchCheck();
+        SetSpriteDirection();
         ClearInputs();
+    }
+
+    void AnimationUpdates()
+    {
+        ///To the Right
+        if ((rightInput || leftInput) && onGround)
+        {
+            animController.SetBool("isGoingRight", true);
+            //animController.SetBool("isIdling", false);
+            //Debug.Log("To The Right");
+        }
+
+        else
+        {
+            animController.SetBool("isGoingRight", false);
+            //animController.SetBool("isIdling", false);
+            //Debug.Log("Right Stop");
+        }
+
+        //Jump On It
+        if (jumpHold && !onGround)
+        {
+            animController.SetBool("isJumping", true);
+        }
+
+        else
+        {
+            animController.SetBool("isJumping", false);
+
+        }
+
+        if ((rightInput && rightWallPress && !onGround) || (leftInput && leftWallPress && !onGround))
+        {
+            //put wall cling on here
+            animController.SetBool("isClinging", true);
+            //Debug.Log("Hang in There!");
+            if (jumpHold)
+            {
+                animController.SetBool("isJumping", false);
+            }
+        }
+
+        else
+        {
+            //put wall cling off here
+            animController.SetBool("isClinging", false);
+            //Debug.Log("Or Die. Who cares.");
+        }
+
+        /////Put 'Em Up
+        //if (shootInput)
+        //{
+        //    animController.SetBool("isShooting", true);
+        //    Debug.Log("Enter has been pressed");
+        //}
+
+        //if (!shootInput)
+        //{
+        //    animController.SetBool("isShooting", false);
+        //    Debug.Log("Enter has been released");
+        //}
+
     }
 
     void GrabInputs()
@@ -564,6 +631,29 @@ public class MechScript : MonoBehaviour
         }
     }
 
+    void SetSpriteDirection()
+    {
+        Vector3 whichFlip = mech.transform.localScale;
+        if (horiAim == "right")
+        {
+            if (whichFlip.x < 0)
+            {
+                whichFlip.x = -whichFlip.x;
+                mech.transform.localScale = whichFlip;
+            }
+            Debug.Log("Flip it real good");
+        }
+        if (horiAim == "left")
+        {
+            if (whichFlip.x > 0)
+            {
+                whichFlip.x = -whichFlip.x;
+                mech.transform.localScale = whichFlip;
+            }
+            Debug.Log("Flip it real good");
+        }
+    }
+
     private void Jump()
     {
         rb.velocity = new Vector2(0, jumpStrength);
@@ -640,5 +730,10 @@ public class MechScript : MonoBehaviour
             SetCamMove();
             PlayerScript.instance.SetCamMove();
         }
+    }
+
+    public void Death()
+    {
+
     }
 }
