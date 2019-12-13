@@ -125,49 +125,6 @@ public class MechScript : MonoBehaviour
             //Debug.Log("Right Stop");
         }
 
-        //Jump On It
-        if (jumpHold && !onGround)
-        {
-            animController.SetBool("isJumping", true);
-        }
-
-        else
-        {
-            animController.SetBool("isJumping", false);
-
-        }
-
-        if ((rightInput && rightWallPress && !onGround) || (leftInput && leftWallPress && !onGround))
-        {
-            //put wall cling on here
-            animController.SetBool("isClinging", true);
-            //Debug.Log("Hang in There!");
-            if (jumpHold)
-            {
-                animController.SetBool("isJumping", false);
-            }
-        }
-
-        else
-        {
-            //put wall cling off here
-            animController.SetBool("isClinging", false);
-            //Debug.Log("Or Die. Who cares.");
-        }
-
-        /////Put 'Em Up
-        //if (shootInput)
-        //{
-        //    animController.SetBool("isShooting", true);
-        //    Debug.Log("Enter has been pressed");
-        //}
-
-        //if (!shootInput)
-        //{
-        //    animController.SetBool("isShooting", false);
-        //    Debug.Log("Enter has been released");
-        //}
-
     }
 
     void GrabInputs()
