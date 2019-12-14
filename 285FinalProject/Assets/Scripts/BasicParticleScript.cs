@@ -27,6 +27,7 @@ public class BasicParticleScript : MonoBehaviour
             collision.gameObject.GetComponent<HealthAndDamageScript>().TakeDamage(10, 0);
             self.SetActive(false);
         }
+        
         if(collision.gameObject.tag == "Player")
         {
             if (self.CompareTag("EnemyBullet"))
@@ -49,4 +50,12 @@ public class BasicParticleScript : MonoBehaviour
         }
     }
 
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if(other.gameObject.layer == 13 && gameObject.layer == 10)
+        {
+            other.gameObject.GetComponent<HealthAndDamageScript>().TakeDamage(10, 0);
+            self.SetActive(false);
+        }
+    }
 }
