@@ -684,7 +684,7 @@ public class PlayerScript : MonoBehaviour
 
     public void Death()
     {
-
+        Destroy(gameObject);
     }
 
 }
