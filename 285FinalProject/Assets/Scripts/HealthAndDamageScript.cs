@@ -22,6 +22,12 @@ public class HealthAndDamageScript : MonoBehaviour
             health -= damage;
             invulnerable = true;
 
+            if (me.CompareTag("Player"))
+            {
+                PlayerScript.instance.LifeText.text = "Life: " + health;
+
+            }
+
             if (health <= 0f)
             {
                 //put what you want on death to happen

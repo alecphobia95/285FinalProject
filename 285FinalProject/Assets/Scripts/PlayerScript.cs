@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerScript : MonoBehaviour
 {
@@ -32,6 +33,7 @@ public class PlayerScript : MonoBehaviour
     public LayerMask whatIsGround;
     public LayerMask whatIsMook;
     public LayerMask whatIsMech;
+    public Text LifeText;
 
     public Transform[] attackSpawns;
     public GameObject[] attackPrefabs;
