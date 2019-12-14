@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class BomberEnemy : MonoBehaviour
 {
+    public Animator animController;
+    public GameObject player;
+
     private bool bomb = false;
     private Vector2 bombPoint;
     private float bombSpeed = 6;
