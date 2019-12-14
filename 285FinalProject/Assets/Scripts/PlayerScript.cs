@@ -8,6 +8,10 @@ public class PlayerScript : MonoBehaviour
     public Animator animController;
     public GameObject player;
 
+    //AUDIO
+    //public AudioClip shotsFired;
+    //AudioSource audioSource;
+
     public static PlayerScript instance;
 
     public CameraMoveScript cameraScript;
@@ -152,19 +156,7 @@ public class PlayerScript : MonoBehaviour
             //Debug.Log("Or Die. Who cares.");
         }
 
-        /////Put 'Em Up
-        //if (shootInput)
-        //{
-        //    animController.SetBool("isShooting", true);
-        //    Debug.Log("Enter has been pressed");
-        //}
-
-        //if (!shootInput)
-        //{
-        //    animController.SetBool("isShooting", false);
-        //    Debug.Log("Enter has been released");
-        //}
-
+ 
     }
     /// </summary>
     void GrabInputs()
@@ -202,6 +194,7 @@ public class PlayerScript : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Return))
         {
             shootInput = true;
+            
             //Debug.Log("Enter has been pressed");
         }
         if (Input.GetKeyDown(KeyCode.Tab))
@@ -435,6 +428,7 @@ public class PlayerScript : MonoBehaviour
                             BasicParticleScript script = attack.GetComponent<BasicParticleScript>();
                             script.horiVel = script.velocity;
                             script.vertVel = 0;
+                            
                         }
                         if (attack.name.Contains("Melee"))
                         {
@@ -448,6 +442,7 @@ public class PlayerScript : MonoBehaviour
                 StartCoroutine(ReadyToShoot(currentWep));
             }
         }
+
     }
 
     IEnumerator ReadyToShoot(int whichOne)
@@ -684,7 +679,7 @@ public class PlayerScript : MonoBehaviour
 
     public void Death()
     {
-
+       
     }
 
 }

@@ -72,6 +72,7 @@
     <Compile Include="Assets\Scripts\FlyingEnemy.cs" />
     <Compile Include="Assets\Scripts\FuelMeterScript.cs" />
     <Compile Include="Assets\Scripts\HealthAndDamageScript.cs" />
+    <Compile Include="Assets\Scripts\HelpMenuScript.cs" />
     <Compile Include="Assets\Scripts\MechScript.cs" />
     <Compile Include="Assets\Scripts\MeleeAttackScript.cs" />
     <Compile Include="Assets\Scripts\PatrolEnemy.cs" />

@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 
 public class UIScript : MonoBehaviour
 {
+
     /// Buttons
     public Button startButton;
     public Button instructButton;
@@ -27,10 +28,6 @@ public class UIScript : MonoBehaviour
         instructPanel.SetActive(false);
         quitPanel.SetActive(false);
         buttonPanel.SetActive(true);
-    }
-
-    public void closeAction()
-    {
         
     }
 
@@ -39,6 +36,7 @@ public class UIScript : MonoBehaviour
         instructPanel.SetActive(false);
         quitPanel.SetActive(false);
         buttonPanel.SetActive(false);
+        GameStart();
     }
 
     public void InstructButton()
@@ -68,9 +66,14 @@ public class UIScript : MonoBehaviour
         quitPanel.SetActive(false);
     }
 
+    public void GameStart()
+    {
+        SceneManager.LoadScene("GameScene");
+    }
+
     private void Update()
     {
-
+        ///Handles in game access to control menu
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             // Check whether it's active / inactive
