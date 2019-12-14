@@ -13,9 +13,9 @@ GameObject:
   - component: {fileID: 3434305833520494179}
   - component: {fileID: 4603357682551004637}
   - component: {fileID: 7002138397327403437}
-  m_Layer: 10
+  m_Layer: 13
   m_Name: RangedParticleEnemy
-  m_TagString: MechBullet
+  m_TagString: EnemyBullet
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

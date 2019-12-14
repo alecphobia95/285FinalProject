@@ -22,7 +22,7 @@ public class BasicParticleScript : MonoBehaviour
         {
             self.SetActive(false);
         }
-        if(collision.gameObject.layer == 13)
+        if(collision.gameObject.layer == 13 && gameObject.layer != 13)
         {
             collision.gameObject.GetComponent<HealthAndDamageScript>().TakeDamage(10, 0);
             self.SetActive(false);

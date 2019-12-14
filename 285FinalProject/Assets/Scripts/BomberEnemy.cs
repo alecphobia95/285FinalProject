@@ -40,6 +40,15 @@ public class BomberEnemy : MonoBehaviour
             bombPoint = overlapCollider.gameObject.transform.position;
         }
     }
+
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.gameObject.CompareTag("Player"))
+        {
+            other.gameObject.GetComponent<HealthAndDamageScript>().TakeDamage(20, 0);
+            Death();
+        }
+    }
     
     public void Death()
     {
